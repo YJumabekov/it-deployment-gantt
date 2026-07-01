@@ -1,0 +1,207 @@
+:root {
+  --phase-1: #6b7fd7;
+  --phase-2: #4fb0c6;
+  --phase-3: #4caf82;
+  --phase-4: #d7a03d;
+  --phase-5: #d76b6b;
+  --phase-6: #9b6bd7;
+  --phase-7: #6b6b6b;
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --border: #dcdfe4;
+  --text: #202225;
+  --accent: #2f6fed;
+}
+
+* { box-sizing: border-box; }
+
+.hidden { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-modes {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.view-modes button {
+  border: none;
+  background: var(--panel);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  border-right: 1px solid var(--border);
+}
+
+.view-modes button:last-child { border-right: none; }
+.view-modes button.active { background: var(--accent); color: white; }
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-secondary { background: #eceef1; color: var(--text); }
+.btn-danger { background: #e5484d; color: white; }
+
+.status-pill {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-readonly { background: #f0e6c8; color: #7a5c00; }
+.status-editable { background: #d8f0e0; color: #0d6b3a; }
+.status-dirty { background: #fbdede; color: #a11; }
+
+.gantt-container {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Phase colour coding on Frappe Gantt bars */
+.phase-1 .bar { fill: var(--phase-1) !important; }
+.phase-2 .bar { fill: var(--phase-2) !important; }
+.phase-3 .bar { fill: var(--phase-3) !important; }
+.phase-4 .bar { fill: var(--phase-4) !important; }
+.phase-5 .bar { fill: var(--phase-5) !important; }
+.phase-6 .bar { fill: var(--phase-6) !important; }
+.phase-7 .bar { fill: var(--phase-7) !important; }
+.milestone .bar { fill: #222 !important; }
+.milestone .bar-progress { fill: #222 !important; }
+
+/* We use our own modal as the "info box" instead of Frappe Gantt's built-in
+   hover/click popup, so keep that one permanently hidden. */
+.popup-wrapper { display: none !important; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 22px 26px;
+  width: 460px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+.modal h2 { margin-top: 0; font-size: 17px; }
+
+.modal label {
+  display: block;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 10px;
+  flex: 1;
+}
+
+.modal label input,
+.modal label select,
+.modal label textarea {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.modal .row {
+  display: flex;
+  gap: 12px;
+}
+
+.help-text {
+  font-size: 12.5px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.modal-error {
+  background: #fdecec;
+  color: #a11;
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.modal-error.hidden { display: none; }
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.modal-actions .spacer { flex: 1; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  z-index: 200;
+}
+
+.toast.hidden { display: none; }
+.toast.error { background: #a11; }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IT Product Deployment — Gantt Chart</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>IT Product Deployment — Gantt Chart</h1>
+    <div class="topbar-controls">
+      <div class="view-modes">
+        <button data-mode="Day">Day</button>
+        <button data-mode="Week">Week</button>
+        <button data-mode="Month" class="active">Month</button>
+        <button data-mode="Year">Year</button>
+      </div>
+      <button id="addTaskBtn" class="btn btn-primary" disabled title="Connect a token to add tasks">+ Add task</button>
+      <button id="saveBtn" class="btn btn-primary" disabled title="No changes to save">Save changes</button>
+      <span id="statusPill" class="status-pill status-readonly">Read-only (viewing published snapshot)</span>
+      <button id="connectBtn" class="btn btn-secondary">Connect GitHub to edit</button>
+    </div>
+  </header>
+
+  <div id="ganttContainer" class="gantt-container">
+    <div id="ganttTarget"></div>
+  </div>
+
+  <!-- Info box / edit modal -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 id="modalTitle">Edit task</h2>
+      <label>Task name
+        <input type="text" id="f_name" />
+      </label>
+      <label>Phase
+        <select id="f_phase">
+          <option>Phase 1 - Initiation & Planning</option>
+          <option>Phase 2 - Design</option>
+          <option>Phase 3 - Build & Configuration</option>
+          <option>Phase 4 - Testing & QA</option>
+          <option>Phase 5 - Training & Change Mgmt</option>
+          <option>Phase 6 - Deployment / Go-Live</option>
+          <option>Phase 7 - Hypercare & Closeout</option>
+        </select>
+      </label>
+      <div class="row">
+        <label>Start date
+          <input type="date" id="f_start" />
+        </label>
+        <label>End date
+          <input type="date" id="f_end" />
+        </label>
+      </div>
+      <div class="row">
+        <label>Type
+          <select id="f_type">
+            <option>Task</option>
+            <option>Milestone</option>
+          </select>
+        </label>
+        <label>Status
+          <select id="f_status">
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Blocked</option>
+            <option>In Review</option>
+            <option>Done</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Owner
+          <input type="text" id="f_owner" />
+        </label>
+        <label>Progress (%)
+          <input type="number" id="f_progress" min="0" max="100" step="5" />
+        </label>
+      </div>
+      <label>Dependencies (comma-separated task IDs)
+        <input type="text" id="f_deps" placeholder="e.g. p1_charter,p2_arch" />
+      </label>
+      <label>Notes
+        <textarea id="f_notes" rows="3"></textarea>
+      </label>
+      <div id="modalError" class="modal-error hidden"></div>
+      <div class="modal-actions">
+        <button id="deleteBtn" class="btn btn-danger">Delete</button>
+        <div class="spacer"></div>
+        <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="saveTaskBtn" class="btn btn-primary">Save task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Token connect modal -->
+  <div id="tokenOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2>Connect to GitHub to edit</h2>
+      <p class="help-text">
+        Paste a GitHub personal access token with <strong>Contents: Read and write</strong> access
+        to this repository. It's stored only in your browser's local storage and sent directly to
+        <code>api.github.com</code> — never to any other server.
+      </p>
+      <label>Repository owner/org
+        <input type="text" id="t_owner" placeholder="YJumabekov" />
+      </label>
+      <label>Repository name
+        <input type="text" id="t_repo" placeholder="it-deployment-gantt" />
+      </label>
+      <label>Branch
+        <input type="text" id="t_branch" placeholder="main" value="main" />
+      </label>
+      <label>Personal access token
+        <input type="password" id="t_token" placeholder="github_pat_..." />
+      </label>
+      <div id="tokenError" class="modal-error hidden"></div>
+      <div class="modal-actions">
+        <button id="clearTokenBtn" class="btn btn-danger">Disconnect</button>
+        <div class="spacer"></div>
+        <button id="tokenCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="tokenSaveBtn" class="btn btn-primary">Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
