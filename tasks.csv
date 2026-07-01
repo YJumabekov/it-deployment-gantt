@@ -1,0 +1,38 @@
+ID,Phase,Task / Subtask,Type,Duration (business days),Start Date,End Date,Dependencies (IDs),Owner,Status
+p1_charter,Phase 1 - Initiation & Planning,Project charter & business case,Task,3,2026-07-01,2026-07-03,,TBD,Not Started
+p1_stake,Phase 1 - Initiation & Planning,Stakeholder alignment & sign-off,Milestone,0,2026-07-06,2026-07-06,p1_charter,TBD,Not Started
+p1_req,Phase 1 - Initiation & Planning,Requirements gathering & scope definition,Task,5,2026-07-06,2026-07-10,p1_charter,TBD,Not Started
+p1_risk,Phase 1 - Initiation & Planning,Risk & compliance assessment,Task,3,2026-07-07,2026-07-09,p1_stake,TBD,Not Started
+p1_plan,Phase 1 - Initiation & Planning,Resource & budget planning,Task,3,2026-07-13,2026-07-15,p1_req,TBD,Not Started
+p1_gate,Phase 1 - Initiation & Planning,Gate 1 - Planning sign-off,Milestone,0,2026-07-16,2026-07-16,p1_plan;p1_risk,TBD,Not Started
+p2_arch,Phase 2 - Design,Solution architecture design,Task,7,2026-07-17,2026-07-27,p1_gate,TBD,Not Started
+p2_ux,Phase 2 - Design,UX/UI design & prototyping,Task,6,2026-07-17,2026-07-24,p1_gate,TBD,Not Started
+p2_data,Phase 2 - Design,Data model & integration design,Task,5,2026-07-28,2026-08-03,p2_arch,TBD,Not Started
+p2_sec,Phase 2 - Design,Security & compliance review,Task,4,2026-07-28,2026-07-31,p2_arch,TBD,Not Started
+p2_gate,Phase 2 - Design,Gate 2 - Design sign-off,Milestone,0,2026-08-04,2026-08-04,p2_data;p2_sec;p2_ux,TBD,Not Started
+p3_env,Phase 3 - Build & Configuration,Environment setup (dev/test/stage),Task,4,2026-08-05,2026-08-10,p2_gate,TBD,Not Started
+p3_core,Phase 3 - Build & Configuration,Core development / configuration,Task,15,2026-08-11,2026-08-31,p3_env,TBD,Not Started
+p3_int,Phase 3 - Build & Configuration,Integrations build,Task,10,2026-08-11,2026-08-24,p3_env,TBD,Not Started
+p3_cust,Phase 3 - Build & Configuration,Customizations & workflow build,Task,8,2026-09-01,2026-09-10,p3_core,TBD,Not Started
+p3_doc,Phase 3 - Build & Configuration,Draft technical & user documentation,Task,6,2026-09-01,2026-09-08,p3_core,TBD,Not Started
+p3_gate,Phase 3 - Build & Configuration,Gate 3 - Build complete,Milestone,0,2026-09-11,2026-09-11,p3_cust;p3_int;p3_doc,TBD,Not Started
+p4_unit,Phase 4 - Testing & QA,Unit & system integration testing (SIT),Task,6,2026-09-14,2026-09-21,p3_gate,TBD,Not Started
+p4_perf,Phase 4 - Testing & QA,Performance & load testing,Task,4,2026-09-22,2026-09-25,p4_unit,TBD,Not Started
+p4_secTest,Phase 4 - Testing & QA,Security penetration testing,Task,4,2026-09-22,2026-09-25,p4_unit,TBD,Not Started
+p4_uat,Phase 4 - Testing & QA,User acceptance testing (UAT),Task,8,2026-09-28,2026-10-07,p4_perf;p4_secTest,TBD,Not Started
+p4_fix,Phase 4 - Testing & QA,Defect triage & fixes,Task,5,2026-10-08,2026-10-14,p4_uat,TBD,Not Started
+p4_gate,Phase 4 - Testing & QA,Gate 4 - Testing sign-off,Milestone,0,2026-10-15,2026-10-15,p4_fix,TBD,Not Started
+p5_mat,Phase 5 - Training & Change Mgmt,Develop training materials & job aids,Task,6,2026-09-14,2026-09-21,p3_gate,TBD,Not Started
+p5_ttt,Phase 5 - Training & Change Mgmt,Train-the-trainer sessions,Task,3,2026-09-22,2026-09-24,p5_mat,TBD,Not Started
+p5_comm,Phase 5 - Training & Change Mgmt,Change communication rollout,Task,10,2026-09-22,2026-10-05,p5_mat,TBD,Not Started
+p5_end,Phase 5 - Training & Change Mgmt,End-user training sessions,Task,5,2026-09-25,2026-10-01,p5_ttt,TBD,Not Started
+p6_mig,Phase 6 - Deployment / Go-Live,Data migration & validation,Task,5,2026-10-16,2026-10-22,p4_gate,TBD,Not Started
+p6_cutplan,Phase 6 - Deployment / Go-Live,Cutover plan finalization,Task,3,2026-10-16,2026-10-20,p4_gate,TBD,Not Started
+p6_rehearse,Phase 6 - Deployment / Go-Live,Go-live rehearsal / dry run,Task,2,2026-10-23,2026-10-26,p6_mig;p6_cutplan,TBD,Not Started
+p6_golive,Phase 6 - Deployment / Go-Live,Production deployment (Go-Live),Milestone,0,2026-10-27,2026-10-27,p6_rehearse;p5_end,TBD,Not Started
+p6_hyper,Phase 6 - Deployment / Go-Live,Hypercare period begins,Task,1,2026-10-28,2026-10-28,p6_golive,TBD,Not Started
+p7_monitor,Phase 7 - Hypercare & Closeout,Post go-live monitoring & support,Task,10,2026-10-29,2026-11-11,p6_hyper,TBD,Not Started
+p7_issues,Phase 7 - Hypercare & Closeout,Issue resolution & stabilization,Task,10,2026-10-29,2026-11-11,p6_hyper,TBD,Not Started
+p7_kt,Phase 7 - Hypercare & Closeout,Knowledge transfer to ops/support,Task,4,2026-11-12,2026-11-17,p7_monitor,TBD,Not Started
+p7_close,Phase 7 - Hypercare & Closeout,Project closure report & lessons learned,Task,3,2026-11-18,2026-11-20,p7_kt,TBD,Not Started
+p7_final,Phase 7 - Hypercare & Closeout,Project closed,Milestone,0,2026-11-23,2026-11-23,p7_close,TBD,Not Started
