@@ -12,6 +12,8 @@
     <div class="topbar-left">
       <h1 id="pageTitle">Gantt Chart</h1>
       <select id="projectSelect" class="project-select"></select>
+      <button id="renameProjectBtn" class="btn btn-secondary icon-btn" disabled title="Connect a token to rename projects">✎</button>
+      <button id="deleteProjectBtn" class="btn btn-danger icon-btn" disabled title="Connect a token to delete projects">🗑</button>
       <button id="newProjectBtn" class="btn btn-secondary" disabled data-i18n="btn_new_project" title="Connect a token to add projects">+ Project</button>
     </div>
     <div class="topbar-controls">
@@ -22,6 +24,7 @@
         <button data-mode="Year" data-i18n="view_year">Year</button>
       </div>
       <button id="addTaskBtn" class="btn btn-primary" disabled data-i18n="btn_add_task" title="Connect a token to add tasks">+ Add task</button>
+      <button id="addPhaseBtn" class="btn btn-secondary" disabled data-i18n="btn_add_phase" title="Connect a token to add phases">+ Phase</button>
       <button id="saveBtn" class="btn btn-primary" disabled data-i18n="btn_save_changes" title="No changes to save">Save changes</button>
       <span id="statusPill" class="status-pill status-readonly" data-i18n="status_readonly">Read-only (viewing published snapshot)</span>
       <button id="connectBtn" class="btn btn-secondary" data-i18n="btn_connect">Connect GitHub to edit</button>
@@ -56,15 +59,7 @@
         <input type="text" id="f_name" />
       </label>
       <label><span data-i18n="field_phase">Phase</span>
-        <select id="f_phase">
-          <option value="Phase 1 - Initiation & Planning">Phase 1 - Initiation &amp; Planning</option>
-          <option value="Phase 2 - Design">Phase 2 - Design</option>
-          <option value="Phase 3 - Build & Configuration">Phase 3 - Build &amp; Configuration</option>
-          <option value="Phase 4 - Testing & QA">Phase 4 - Testing &amp; QA</option>
-          <option value="Phase 5 - Training & Change Mgmt">Phase 5 - Training &amp; Change Mgmt</option>
-          <option value="Phase 6 - Deployment / Go-Live">Phase 6 - Deployment / Go-Live</option>
-          <option value="Phase 7 - Hypercare & Closeout">Phase 7 - Hypercare &amp; Closeout</option>
-        </select>
+        <select id="f_phase"></select>
       </label>
       <div class="row">
         <label><span data-i18n="field_start_date">Start date</span>

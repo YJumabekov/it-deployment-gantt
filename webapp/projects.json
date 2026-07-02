@@ -3,6 +3,15 @@
     {
       "id": "it-deployment",
       "name": "IT Product Deployment",
+      "phases": [
+        "Phase 1 - Initiation & Planning",
+        "Phase 2 - Design",
+        "Phase 3 - Build & Configuration",
+        "Phase 4 - Testing & QA",
+        "Phase 5 - Training & Change Mgmt",
+        "Phase 6 - Deployment / Go-Live",
+        "Phase 7 - Hypercare & Closeout"
+      ],
       "tasks": [
         {
           "id": "p1_charter",

@@ -104,6 +104,33 @@ body {
 .btn-secondary { background: #eceef1; color: var(--text); }
 .btn-danger { background: #e5484d; color: white; }
 
+/* Small square icon-only buttons — toolbar rename/delete project, and
+   the rename/delete controls inline in phase rows. */
+.btn.icon-btn {
+  padding: 6px 9px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.name-row .icon-btn {
+  border: none;
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  background: transparent;
+  color: #666;
+}
+
+.name-row .rename-phase-btn:hover { background: #e2e5ea; }
+.name-row .delete-phase-btn:hover { background: #f6c9c9; }
+
+.phase-actions {
+  justify-content: center !important;
+}
+
 .status-pill {
   font-size: 12px;
   padding: 4px 10px;

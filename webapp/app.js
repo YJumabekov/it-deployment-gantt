@@ -43,6 +43,7 @@ const I18N = {
     view_month: "Month",
     view_year: "Year",
     btn_add_task: "+ Add task",
+    btn_add_phase: "+ Phase",
     btn_new_project: "+ Project",
     btn_save_changes: "Save changes",
     btn_connect: "Connect GitHub to edit",
@@ -105,6 +106,20 @@ const I18N = {
     col_task: "Task",
     col_owner: "Owner",
     col_overdue: "Overdue",
+    default_phase_name: "Phase 1",
+    prompt_rename_project_name: "Rename project to:",
+    confirm_delete_project: "Delete project \"{name}\" and all its tasks? This cannot be undone.",
+    toast_cannot_delete_last_project: "Can't delete the only project.",
+    prompt_add_phase_name: "New phase name:",
+    prompt_rename_phase_name: "Rename phase to:",
+    err_phase_duplicate: "A phase with that name already exists.",
+    confirm_delete_phase_with_tasks: "Delete phase \"{name}\" and its {count} task(s)? This cannot be undone.",
+    confirm_delete_phase_empty: "Delete phase \"{name}\"?",
+    title_rename_project: "Rename project",
+    title_delete_project: "Delete project",
+    title_add_phase: "Add phase",
+    title_rename_phase: "Rename phase",
+    title_delete_phase: "Delete phase",
   },
   ru: {
     app_title: "Диаграмма Ганта",
@@ -113,6 +128,7 @@ const I18N = {
     view_month: "Месяц",
     view_year: "Год",
     btn_add_task: "+ Задача",
+    btn_add_phase: "+ Этап",
     btn_new_project: "+ Проект",
     btn_save_changes: "Сохранить",
     btn_connect: "Подключить GitHub для редактирования",
@@ -175,6 +191,20 @@ const I18N = {
     col_task: "Задача",
     col_owner: "Исполнитель",
     col_overdue: "Просроченность",
+    default_phase_name: "Этап 1",
+    prompt_rename_project_name: "Переименовать проект в:",
+    confirm_delete_project: "Удалить проект «{name}» и все его задачи? Это действие необратимо.",
+    toast_cannot_delete_last_project: "Нельзя удалить единственный проект.",
+    prompt_add_phase_name: "Название нового этапа:",
+    prompt_rename_phase_name: "Переименовать этап в:",
+    err_phase_duplicate: "Этап с таким названием уже существует.",
+    confirm_delete_phase_with_tasks: "Удалить этап «{name}» и его задачи ({count})? Это действие необратимо.",
+    confirm_delete_phase_empty: "Удалить этап «{name}»?",
+    title_rename_project: "Переименовать проект",
+    title_delete_project: "Удалить проект",
+    title_add_phase: "Добавить этап",
+    title_rename_phase: "Переименовать этап",
+    title_delete_phase: "Удалить этап",
   },
 };
 
@@ -356,12 +386,104 @@ function addProject() {
   const cur = getCurrentProject();
   if (cur) cur.tasks = tasks;
   const id = slugify(name);
-  projects.push({ id, name, tasks: [] });
+  projects.push({ id, name, phases: [tr("default_phase_name")], tasks: [] });
   currentProjectId = id;
   localStorage.setItem(PROJECT_KEY, id);
   tasks = getCurrentProject().tasks;
   setDirty(true);
   renderProjectSelector();
+  renderGantt();
+}
+
+function renameProject() {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const newName = (prompt(tr("prompt_rename_project_name"), proj.name) || "").trim();
+  if (!newName || newName === proj.name) return;
+  proj.name = newName;
+  setDirty(true);
+  renderProjectSelector();
+}
+
+function deleteProject() {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  if (projects.length <= 1) {
+    showToast(tr("toast_cannot_delete_last_project"), true);
+    return;
+  }
+  if (!confirm(tr("confirm_delete_project", { name: proj.name }))) return;
+  projects = projects.filter((p) => p.id !== proj.id);
+  currentProjectId = projects[0].id;
+  localStorage.setItem(PROJECT_KEY, currentProjectId);
+  tasks = getCurrentProject().tasks;
+  setDirty(true);
+  renderProjectSelector();
+  renderGantt();
+}
+
+function addPhase() {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const name = (prompt(tr("prompt_add_phase_name")) || "").trim();
+  if (!name) return;
+  if (!Array.isArray(proj.phases)) proj.phases = getPhaseList();
+  if (proj.phases.includes(name)) {
+    showToast(tr("err_phase_duplicate"), true);
+    return;
+  }
+  proj.phases.push(name);
+  setDirty(true);
+  renderGantt();
+}
+
+function renamePhase(oldName) {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const newName = (prompt(tr("prompt_rename_phase_name"), oldName) || "").trim();
+  if (!newName || newName === oldName) return;
+  if (!Array.isArray(proj.phases)) proj.phases = getPhaseList();
+  if (proj.phases.includes(newName)) {
+    showToast(tr("err_phase_duplicate"), true);
+    return;
+  }
+  const idx = proj.phases.indexOf(oldName);
+  if (idx !== -1) proj.phases[idx] = newName;
+  tasks.forEach((t) => {
+    if (t.phase === oldName) t.phase = newName;
+  });
+  if (collapsedPhases.has(oldName)) {
+    collapsedPhases.delete(oldName);
+    collapsedPhases.add(newName);
+    localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedPhases]));
+  }
+  setDirty(true);
+  renderGantt();
+}
+
+function deletePhase(name) {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const affected = tasks.filter((t) => t.phase === name);
+  const message = affected.length
+    ? tr("confirm_delete_phase_with_tasks", { name, count: affected.length })
+    : tr("confirm_delete_phase_empty", { name });
+  if (!confirm(message)) return;
+  const affectedIds = new Set(affected.map((t) => t.id));
+  tasks = tasks.filter((t) => t.phase !== name);
+  tasks.forEach((t) => {
+    if (!t.dependencies) return;
+    t.dependencies = t.dependencies
+      .split(",")
+      .map((s) => s.trim())
+      .filter((id) => id && !affectedIds.has(id))
+      .join(",");
+  });
+  if (!Array.isArray(proj.phases)) proj.phases = getPhaseList();
+  proj.phases = proj.phases.filter((p) => p !== name);
+  collapsedPhases.delete(name);
+  localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedPhases]));
+  setDirty(true);
   renderGantt();
 }
 
@@ -380,9 +502,15 @@ function renderProjectSelector() {
   el("pageTitle").textContent = proj ? proj.name : tr("app_title");
 }
 
-function phaseNumber(phaseLabel) {
-  const m = /Phase (\d+)/.exec(phaseLabel || "");
-  return m ? m[1] : "0";
+// Phases can now be freely renamed/added, so we can't rely on parsing
+// "Phase N" out of the name for a colour — cycle through the palette by
+// the phase's position in the project's own phase list instead.
+function phaseColorClass(phaseLabel) {
+  const proj = getCurrentProject();
+  const phases = (proj && proj.phases) || [];
+  const idx = phases.indexOf(phaseLabel);
+  const n = idx === -1 ? 0 : (idx % 7) + 1;
+  return `phase-${n}`;
 }
 
 // Our data model stores `end` as the last inclusive working day (matching
@@ -410,32 +538,43 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// Phases aren't stored as separate tasks — they're derived on every render
-// from the distinct `phase` values already on each task, in first-seen
-// order, so adding/removing tasks automatically keeps phases in sync.
-// Each phase becomes a collapsible synthetic parent row spanning the
-// min/max dates of its children.
-function buildRenderRows() {
-  const phaseOrder = [];
-  const phaseGroups = {};
+// Phases are an explicit, ordered, per-project list (project.phases) so a
+// phase can exist with zero tasks (freshly added, or about to be
+// deleted). Older/foreign data without a phases list falls back to
+// deriving one from whatever `phase` values the tasks already have.
+function getPhaseList() {
+  const proj = getCurrentProject();
+  if (proj && Array.isArray(proj.phases) && proj.phases.length) return proj.phases;
+  const seen = [];
   tasks.forEach((t) => {
-    if (!phaseGroups[t.phase]) {
-      phaseGroups[t.phase] = [];
-      phaseOrder.push(t.phase);
-    }
+    if (t.phase && !seen.includes(t.phase)) seen.push(t.phase);
+  });
+  return seen;
+}
+
+// Each phase becomes a collapsible synthetic parent row spanning the
+// min/max dates of its children (or today, if it has none yet).
+function buildRenderRows() {
+  const phaseList = getPhaseList();
+  const phaseGroups = {};
+  phaseList.forEach((p) => (phaseGroups[p] = []));
+  tasks.forEach((t) => {
+    if (!phaseGroups[t.phase]) phaseGroups[t.phase] = []; // defensive: task references a phase no longer in the list
     phaseGroups[t.phase].push(t);
   });
+  const allPhaseNames = phaseList.concat(Object.keys(phaseGroups).filter((p) => !phaseList.includes(p)));
 
   const rows = [];
-  phaseOrder.forEach((phaseLabel) => {
-    const children = phaseGroups[phaseLabel];
+  allPhaseNames.forEach((phaseLabel) => {
+    const children = phaseGroups[phaseLabel] || [];
     const collapsed = collapsedPhases.has(phaseLabel);
+    const today = formatDate(new Date());
     const phaseRow = {
       id: phaseParentId(phaseLabel),
       name: phaseLabel,
       phase: phaseLabel,
-      start: children.map((c) => c.start).reduce((a, b) => (a < b ? a : b)),
-      end: children.map((c) => c.end).reduce((a, b) => (a > b ? a : b)),
+      start: children.length ? children.map((c) => c.start).reduce((a, b) => (a < b ? a : b)) : today,
+      end: children.length ? children.map((c) => c.end).reduce((a, b) => (a > b ? a : b)) : today,
       isPhaseParent: true,
       collapsed,
     };
@@ -461,7 +600,7 @@ function toGanttTasks(rows) {
         end: addDays(t.end, 1),
         progress: 0,
         dependencies: "",
-        custom_class: `phase-${phaseNumber(t.phase)} phase-parent`,
+        custom_class: `${phaseColorClass(t.phase)} phase-parent`,
       };
     }
     // If a dependency belongs to a currently-collapsed phase, point the
@@ -485,7 +624,7 @@ function toGanttTasks(rows) {
       progress: t.progress || 0,
       dependencies: deps,
       custom_class:
-        `phase-${phaseNumber(t.phase)}` +
+        phaseColorClass(t.phase) +
         (t.type === "Milestone" ? " milestone" : "") +
         (daysOverdue(t) ? " overdue" : ""),
     };
@@ -665,11 +804,25 @@ function renderNameColumn(rows) {
     if (r.isPhaseParent) {
       div.className = "name-row phase-row";
       const arrow = r.task.collapsed ? "▶" : "▼";
+      const phaseActionsHtml = isEditable
+        ? `<span class="col-owner phase-actions"><button type="button" class="icon-btn rename-phase-btn" title="${escapeHtml(tr("title_rename_phase"))}">✎</button></span>` +
+          `<span class="col-overdue phase-actions"><button type="button" class="icon-btn delete-phase-btn" title="${escapeHtml(tr("title_delete_phase"))}">🗑</button></span>`
+        : `<span class="col-owner"></span><span class="col-overdue"></span>`;
       div.innerHTML =
         `<span class="col-task"><span class="toggle">${arrow}</span><span class="task-label">${escapeHtml(r.task.name)}</span></span>` +
-        `<span class="col-owner"></span><span class="col-overdue"></span>`;
+        phaseActionsHtml;
       div.title = r.task.name;
       div.addEventListener("click", () => togglePhase(r.task.phase));
+      if (isEditable) {
+        div.querySelector(".rename-phase-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          renamePhase(r.task.phase);
+        });
+        div.querySelector(".delete-phase-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          deletePhase(r.task.phase);
+        });
+      }
     } else {
       const overdue = daysOverdue(r.task);
       div.className = "name-row" + (overdue ? " overdue" : "");
@@ -755,6 +908,20 @@ function setModalEditable(isEditable) {
   el("saveTaskBtn").classList.toggle("hidden", !isEditable);
 }
 
+// The Phase field used to be a fixed 7-option list; now it reflects
+// whatever this project's phases actually are, so it's rebuilt every
+// time the modal opens instead of living as static HTML.
+function populatePhaseSelect() {
+  const sel = el("f_phase");
+  sel.innerHTML = "";
+  getPhaseList().forEach((p) => {
+    const opt = document.createElement("option");
+    opt.value = p;
+    opt.textContent = p;
+    sel.appendChild(opt);
+  });
+}
+
 function openEditModal(taskId) {
   editingTaskId = taskId;
   const t = tasks.find((x) => x.id === taskId);
@@ -763,6 +930,7 @@ function openEditModal(taskId) {
   el("modalTitle").textContent = isEditable
     ? tr("modal_edit_title_dynamic", { id: t.id })
     : tr("modal_readonly_title_dynamic", { id: t.id });
+  populatePhaseSelect();
   el("f_name").value = t.name.replace(/^◆\s*/, "");
   el("f_phase").value = t.phase;
   el("f_start").value = t.start;
@@ -781,8 +949,10 @@ function openEditModal(taskId) {
 function openNewTaskModal() {
   editingTaskId = null;
   el("modalTitle").textContent = tr("modal_add_title");
+  populatePhaseSelect();
   el("f_name").value = "";
-  el("f_phase").value = "Phase 1 - Initiation & Planning";
+  const phases = getPhaseList();
+  el("f_phase").value = phases.length ? phases[0] : "";
   const today = formatDate(new Date());
   el("f_start").value = today;
   el("f_end").value = today;
@@ -890,6 +1060,12 @@ function closeTokenModal() {
   el("tokenOverlay").classList.add("hidden");
 }
 
+const EDIT_GATED_BUTTON_IDS = ["addTaskBtn", "newProjectBtn", "addPhaseBtn", "renameProjectBtn", "deleteProjectBtn"];
+
+function setEditButtonsEnabled(enabled) {
+  EDIT_GATED_BUTTON_IDS.forEach((id) => (el(id).disabled = !enabled));
+}
+
 async function connectToken() {
   const owner = el("t_owner").value.trim();
   const repo = el("t_repo").value.trim();
@@ -913,8 +1089,7 @@ async function connectToken() {
     }
     setConfig(cfg);
     closeTokenModal();
-    el("addTaskBtn").disabled = false;
-    el("newProjectBtn").disabled = false;
+    setEditButtonsEnabled(true);
     el("connectBtn").textContent = tr("btn_manage_connection");
     await loadProjects();
     renderProjectSelector();
@@ -929,8 +1104,7 @@ async function connectToken() {
 function disconnectToken() {
   clearConfig();
   closeTokenModal();
-  el("addTaskBtn").disabled = true;
-  el("newProjectBtn").disabled = true;
+  setEditButtonsEnabled(false);
   el("connectBtn").textContent = tr("btn_connect");
   loadProjects().then(() => {
     renderProjectSelector();
@@ -996,7 +1170,10 @@ function wireUp() {
   });
 
   el("addTaskBtn").addEventListener("click", openNewTaskModal);
+  el("addPhaseBtn").addEventListener("click", addPhase);
   el("newProjectBtn").addEventListener("click", addProject);
+  el("renameProjectBtn").addEventListener("click", renameProject);
+  el("deleteProjectBtn").addEventListener("click", deleteProject);
   el("projectSelect").addEventListener("change", (e) => switchProject(e.target.value));
   el("saveBtn").addEventListener("click", saveChanges);
   el("connectBtn").addEventListener("click", openTokenModal);
@@ -1023,8 +1200,7 @@ function wireUp() {
   attachClickToEdit();
   applyStaticTranslations();
   const cfg = getConfig();
-  el("addTaskBtn").disabled = !cfg;
-  el("newProjectBtn").disabled = !cfg;
+  setEditButtonsEnabled(!!cfg);
   el("connectBtn").textContent = cfg ? tr("btn_manage_connection") : tr("btn_connect");
   await loadProjects();
   renderProjectSelector();
