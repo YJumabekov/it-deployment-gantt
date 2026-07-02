@@ -41,6 +41,14 @@ body {
 .topbar h1 {
   font-size: 18px;
   margin: 0;
+  white-space: nowrap;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .topbar-controls {
@@ -48,6 +56,20 @@ body {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.project-select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--panel);
+  max-width: 220px;
+}
+
+.lang-toggle {
+  font-weight: 600;
+  min-width: 38px;
 }
 
 .view-modes {
@@ -95,8 +117,55 @@ body {
 
 #ganttContainer {
   padding: 20px;
-  max-height: 75vh;
+}
+
+/* Frozen header row: sits outside the vertically-scrolling body entirely
+   (not just visually pinned), so it's on screen at any scroll position
+   without relying on SVG position:sticky, which turned out unreliable —
+   testing it caused Chrome to badly mis-position bars. Its content is a
+   cloned copy of the chart's own SVG, cropped to the top 60px, kept in
+   horizontal sync with the real body via JS (see syncFrozenHeader). */
+.gantt-frozen-header {
+  display: flex;
+  position: sticky;
+  /* Set from JS (syncTopbarHeight) since the topbar's height varies with
+     viewport width and language — a hardcoded offset would let this row
+     overlap the topbar once the page itself scrolls. */
+  top: var(--topbar-height, 57px);
+  z-index: 8;
+  background: var(--panel);
+}
+
+.name-col-header {
+  flex: 0 0 260px;
+  height: 60px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.gantt-header-viewport {
+  flex: 1;
+  min-width: 0;
+  height: 60px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+/* The cloned SVG inside the header viewport is purely a visual mirror —
+   all real interaction happens on the body copy below. */
+.gantt-header-viewport svg { pointer-events: none; }
+
+.gantt-scroll-body {
+  max-height: 70vh;
   overflow-y: auto;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  color: #888;
+  font-size: 14px;
 }
 
 .gantt-split {
@@ -112,12 +181,16 @@ body {
 /* Frappe Gantt creates its own internal .gantt-container div (with
    overflow:auto in the library's own stylesheet) as the direct parent of
    the SVG. That's the element that actually needs to scroll horizontally —
-   our own #ganttContainer above handles vertical scroll for the whole
-   split pane instead, so we pin this one to horizontal-only. */
+   .gantt-scroll-body above handles vertical scroll for the whole split
+   pane instead, so we pin this one to horizontal-only. The negative
+   margin shifts the header portion the SVG still draws internally up and
+   out of view, since it's already shown in the frozen header above —
+   showing it twice would be redundant. */
 #ganttTarget > .gantt-container {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0;
+  margin-top: -60px;
 }
 
 /* Row geometry here (60px header, 38px rows) must stay in sync with the
@@ -127,11 +200,6 @@ body {
   flex: 0 0 260px;
   border-right: 1px solid var(--border);
   background: var(--panel);
-}
-
-.name-col-header {
-  height: 60px;
-  border-bottom: 1px solid var(--border);
 }
 
 .name-col-body {
