@@ -120,6 +120,13 @@ const I18N = {
     title_add_phase: "Add phase",
     title_rename_phase: "Rename phase",
     title_delete_phase: "Delete phase",
+    err_deps_not_done: "Can't mark this Done — dependency not finished yet: {names}",
+    toast_deps_not_done: "Can't reach 100% — a dependency isn't marked Done yet.",
+    toast_dep_added: "Dependency added.",
+    toast_dep_exists: "That dependency already exists.",
+    toast_dep_cycle: "That would create a circular dependency.",
+    toast_dep_connect_readonly: "Connect GitHub to link dependencies.",
+    dep_connector_hint: "Drag to another task to add a dependency",
   },
   ru: {
     app_title: "Диаграмма Ганта",
@@ -205,6 +212,13 @@ const I18N = {
     title_add_phase: "Добавить этап",
     title_rename_phase: "Переименовать этап",
     title_delete_phase: "Удалить этап",
+    err_deps_not_done: "Нельзя завершить: не выполнена зависимая задача: {names}",
+    toast_deps_not_done: "Нельзя дойти до 100% — зависимая задача ещё не завершена.",
+    toast_dep_added: "Зависимость добавлена.",
+    toast_dep_exists: "Такая зависимость уже есть.",
+    toast_dep_cycle: "Это создаст циклическую зависимость.",
+    toast_dep_connect_readonly: "Подключите GitHub, чтобы связывать зависимости.",
+    dep_connector_hint: "Перетащите на другую задачу, чтобы добавить зависимость",
   },
 };
 
@@ -702,6 +716,11 @@ function renderGantt() {
       }
       const t = tasks.find((x) => x.id === task.id);
       if (!t) return;
+      if (progress >= 100 && getIncompleteDependencyNames(t.dependencies, t.id).length) {
+        showToast(tr("toast_deps_not_done"), true);
+        setTimeout(renderGantt, 0);
+        return;
+      }
       t.progress = progress;
       setDirty(true);
     },
@@ -709,6 +728,7 @@ function renderGantt() {
 
   renderNameColumn(rows);
   syncFrozenHeader();
+  renderDependencyConnectors();
 }
 
 // The frozen header row shows a cloned, cropped copy of the chart's own
@@ -838,6 +858,137 @@ function renderNameColumn(rows) {
   });
 }
 
+// Small circle at the right edge of each (non-phase) task's bar — dragging
+// from it onto another task's bar adds that as a dependency. Frappe Gantt
+// has no built-in support for this, so the whole interaction (the dots,
+// the preview line while dragging, and drop-target detection) is ours.
+// Lives in its own top-level <g>, a sibling of Frappe's bar-wrapper
+// groups rather than nested inside one, so Frappe's own mousedown
+// delegation (which matches ".bar-wrapper, .handle") never fires for a
+// drag that starts on a connector.
+function findBarWrapper(taskId) {
+  return Array.from(document.querySelectorAll("#ganttTarget .bar-wrapper")).find(
+    (w) => w.getAttribute("data-id") === taskId
+  );
+}
+
+function renderDependencyConnectors() {
+  const svg = document.querySelector("#ganttTarget > .gantt-container > svg");
+  if (!svg) return;
+  const layer = document.createElementNS(SVG_NS, "g");
+  layer.setAttribute("class", "dep-connector-layer");
+  svg.appendChild(layer);
+
+  tasks.forEach((t) => {
+    const wrapper = findBarWrapper(t.id);
+    const bar = wrapper && wrapper.querySelector(".bar-group .bar");
+    if (!bar) return;
+    const box = bar.getBBox();
+    const circle = document.createElementNS(SVG_NS, "circle");
+    circle.setAttribute("cx", box.x + box.width);
+    circle.setAttribute("cy", box.y + box.height / 2);
+    circle.setAttribute("r", 5);
+    circle.setAttribute("class", "dep-connector");
+    circle.setAttribute("data-task-id", t.id);
+    const titleEl = document.createElementNS(SVG_NS, "title");
+    titleEl.textContent = tr("dep_connector_hint");
+    circle.appendChild(titleEl);
+    layer.appendChild(circle);
+  });
+}
+
+function toSvgPoint(svg, clientX, clientY) {
+  const pt = svg.createSVGPoint();
+  pt.x = clientX;
+  pt.y = clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+function attachDependencyLinking() {
+  const container = el("ganttTarget");
+  let dragState = null; // { fromId, svg, previewLine }
+
+  container.addEventListener("mousedown", (e) => {
+    const connector = e.target.closest(".dep-connector");
+    if (!connector) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const svg = connector.ownerSVGElement;
+    const start = toSvgPoint(svg, e.clientX, e.clientY);
+    const previewLine = document.createElementNS(SVG_NS, "line");
+    previewLine.setAttribute("class", "dep-connector-preview");
+    previewLine.setAttribute("x1", start.x);
+    previewLine.setAttribute("y1", start.y);
+    previewLine.setAttribute("x2", start.x);
+    previewLine.setAttribute("y2", start.y);
+    svg.appendChild(previewLine);
+    dragState = { fromId: connector.getAttribute("data-task-id"), svg, previewLine };
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!dragState) return;
+    const p = toSvgPoint(dragState.svg, e.clientX, e.clientY);
+    dragState.previewLine.setAttribute("x2", p.x);
+    dragState.previewLine.setAttribute("y2", p.y);
+  });
+
+  document.addEventListener("mouseup", (e) => {
+    if (!dragState) return;
+    const { fromId, previewLine } = dragState;
+    dragState = null;
+    previewLine.remove();
+
+    const dropEl = document.elementFromPoint(e.clientX, e.clientY);
+    const wrapper = dropEl ? dropEl.closest(".bar-wrapper") : null;
+    const toId = wrapper ? wrapper.getAttribute("data-id") : null;
+    if (!toId || toId === fromId || toId.startsWith(PHASE_PREFIX) || fromId.startsWith(PHASE_PREFIX)) return;
+    addDependencyLink(fromId, toId);
+  });
+}
+
+// Adding "toId depends on fromId" would create a cycle if fromId already
+// (transitively) depends on toId — walk fromId's own dependency chain
+// looking for toId.
+function wouldCreateCycle(fromId, toId) {
+  const visited = new Set();
+  function dependsOn(taskId, targetId) {
+    if (taskId === targetId) return true;
+    if (visited.has(taskId)) return false;
+    visited.add(taskId);
+    const t = tasks.find((x) => x.id === taskId);
+    if (!t || !t.dependencies) return false;
+    return t.dependencies
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .some((dep) => dependsOn(dep, targetId));
+  }
+  return dependsOn(fromId, toId);
+}
+
+function addDependencyLink(fromId, toId) {
+  if (!getConfig()) {
+    showToast(tr("toast_dep_connect_readonly"), true);
+    return;
+  }
+  const toTask = tasks.find((t) => t.id === toId);
+  if (!toTask) return;
+  const existing = (toTask.dependencies || "").split(",").map((s) => s.trim()).filter(Boolean);
+  if (existing.includes(fromId)) {
+    showToast(tr("toast_dep_exists"), true);
+    return;
+  }
+  if (wouldCreateCycle(fromId, toId)) {
+    showToast(tr("toast_dep_cycle"), true);
+    return;
+  }
+  existing.push(fromId);
+  toTask.dependencies = existing.join(",");
+  setDirty(true);
+  renderGantt();
+  showToast(tr("toast_dep_added"));
+}
+
 // Frappe Gantt only fires its own click callback on double-click (to avoid
 // misfiring after a drag). We want single-click-to-edit like Trello, so we
 // track mousedown/mouseup ourselves and open the modal only when the pointer
@@ -896,6 +1047,17 @@ function daysOverdue(t) {
   if (t.end >= todayStr) return 0;
   const diffMs = parseLocalDate(todayStr) - parseLocalDate(t.end);
   return Math.round(diffMs / 86400000);
+}
+
+// Names of dependency tasks (by ID list, comma-separated) that aren't
+// marked Done yet — used to block marking a task Done, or its progress
+// reaching 100%, before its prerequisites are actually finished.
+function getIncompleteDependencyNames(depsString, ownId) {
+  const ids = (depsString || "").split(",").map((s) => s.trim()).filter(Boolean);
+  return ids
+    .map((id) => tasks.find((x) => x.id === id && x.id !== ownId))
+    .filter((dep) => dep && dep.status !== "Done")
+    .map((dep) => dep.name);
 }
 
 /* ---------- Edit modal ---------- */
@@ -994,6 +1156,15 @@ function saveTaskFromModal() {
   if (!start || !end) return showModalError(tr("err_dates_required"));
   if (end < start) return showModalError(tr("err_end_before_start"));
 
+  const status = el("f_status").value;
+  const dependencies = el("f_deps").value.trim();
+  if (status === "Done") {
+    const incomplete = getIncompleteDependencyNames(dependencies, editingTaskId);
+    if (incomplete.length) {
+      return showModalError(tr("err_deps_not_done", { names: incomplete.join(", ") }));
+    }
+  }
+
   const data = {
     id: editingTaskId || slugify(name),
     name,
@@ -1001,10 +1172,10 @@ function saveTaskFromModal() {
     start,
     end,
     type: el("f_type").value,
-    status: el("f_status").value,
+    status,
     owner: el("f_owner").value.trim(),
     progress: Number(el("f_progress").value) || 0,
-    dependencies: el("f_deps").value.trim(),
+    dependencies,
     notes: el("f_notes").value.trim(),
   };
 
@@ -1198,6 +1369,7 @@ function wireUp() {
 (async function init() {
   wireUp();
   attachClickToEdit();
+  attachDependencyLinking();
   applyStaticTranslations();
   const cfg = getConfig();
   setEditButtonsEnabled(!!cfg);

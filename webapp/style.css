@@ -442,6 +442,24 @@ body {
   stroke-dasharray: none;
 }
 
+/* Dependency connector dots (right edge of each bar) and the dashed
+   preview line shown while dragging one to another task. */
+.dep-connector {
+  fill: var(--accent);
+  opacity: 0.5;
+  cursor: crosshair;
+  transition: opacity 0.1s ease;
+}
+
+.dep-connector:hover { opacity: 1; }
+
+.dep-connector-preview {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 4, 3;
+  pointer-events: none;
+}
+
 /* Task names now live in the name column, so hide Frappe's own in-chart
    labels to avoid showing every name twice. */
 .bar-label { display: none; }
