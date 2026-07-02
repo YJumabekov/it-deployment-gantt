@@ -231,6 +231,9 @@ body {
 
 .name-row.phase-row:hover { background: #eaecef; }
 
+.name-row.overdue { background: #fdecec; }
+.name-row.overdue:hover { background: #fbdcdc; }
+
 .name-row .toggle {
   display: inline-block;
   width: 14px;
@@ -245,6 +248,36 @@ body {
   flex-shrink: 0;
 }
 
+.task-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-owner {
+  flex-shrink: 0;
+  max-width: 76px;
+  margin-left: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  color: #888;
+}
+
+.overdue-badge {
+  flex-shrink: 0;
+  margin-left: 6px;
+  background: #d43a3a;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
 /* Phase colour coding on Frappe Gantt bars */
 .phase-1 .bar { fill: var(--phase-1) !important; }
 .phase-2 .bar { fill: var(--phase-2) !important; }
@@ -257,6 +290,11 @@ body {
 .milestone .bar-progress { fill: #222 !important; }
 .phase-parent .bar { fill: #333 !important; }
 .phase-parent .bar-progress { fill: #333 !important; }
+
+/* Overdue always wins over phase/milestone colouring — placed last so it
+   takes precedence when specificity + !important tie with the rules above. */
+.overdue .bar { fill: #d43a3a !important; }
+.overdue .bar-progress { fill: #a11212 !important; }
 
 /* Task names now live in the name column, so hide Frappe's own in-chart
    labels to avoid showing every name twice. */

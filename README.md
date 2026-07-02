@@ -18,7 +18,8 @@ Live at: `https://YOUR-ORG-OR-USER.github.io/it-deployment-gantt/` once GitHub P
 
 - **Anyone** can open the link and view the chart — drag a bar, and it's obvious this is read-only (bar snaps back, a toast explains why).
 - **To edit**: click **Connect GitHub to edit**, paste a personal access token (see setup below). From then on: drag bars to reschedule, drag the right edge to resize, drag the progress handle to update %, and click any bar or task name to open the full info box (rename, reassign, change phase/status, edit dependencies/notes, or delete).
-- **Task names live in a fixed left column** synced to the chart, and the date-axis header stays visible (with a reachable horizontal scrollbar) no matter how far you scroll down through a long task list.
+- **Task names live in a fixed left column** synced to the chart, and the date-axis header stays visible (with a reachable horizontal scrollbar) no matter how far you scroll down through a long task list. Each row also shows its **Owner** next to the name.
+- **Overdue tasks are flagged automatically**: any task not marked Done whose end date has passed turns its bar red, its row gets a red "Xd" badge (days overdue), and the row itself gets a light red tint — no manual flagging needed, it's computed from today's date.
 - **Phases are collapsible** — click a phase row's ▼/▶ to fold its tasks away into a single summary bar; dependency arrows automatically reroute to point at the summary bar when their target is hidden.
 - **Multiple projects**: use the dropdown next to the title to switch between projects, or **+ Project** (while connected) to start a new one.
 - **English/Russian toggle** in the top-right switches all interface text (buttons, labels, statuses); task data you enter is not auto-translated.

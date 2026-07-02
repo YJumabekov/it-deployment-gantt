@@ -101,6 +101,7 @@ const I18N = {
     toast_phase_bar_readonly: "Phase bars are calculated from their tasks — drag the tasks inside instead.",
     prompt_new_project_name: "New project name:",
     empty_project: "This project has no tasks yet. Click \"+ Add task\" to get started.",
+    overdue_days_title: "{days} day(s) overdue",
   },
   ru: {
     app_title: "Диаграмма Ганта",
@@ -167,6 +168,7 @@ const I18N = {
     toast_phase_bar_readonly: "Полосы этапов рассчитываются по их задачам — перетаскивайте задачи внутри этапа.",
     prompt_new_project_name: "Название нового проекта:",
     empty_project: "В этом проекте пока нет задач. Нажмите «+ Задача», чтобы начать.",
+    overdue_days_title: "Просрочено на {days} дн.",
   },
 };
 
@@ -477,7 +479,9 @@ function toGanttTasks(rows) {
       progress: t.progress || 0,
       dependencies: deps,
       custom_class:
-        `phase-${phaseNumber(t.phase)}` + (t.type === "Milestone" ? " milestone" : ""),
+        `phase-${phaseNumber(t.phase)}` +
+        (t.type === "Milestone" ? " milestone" : "") +
+        (daysOverdue(t) ? " overdue" : ""),
     };
   });
 }
@@ -632,9 +636,16 @@ function renderNameColumn(rows) {
       div.title = r.task.name;
       div.addEventListener("click", () => togglePhase(r.task.phase));
     } else {
-      div.className = "name-row";
-      div.innerHTML = `<span class="indent"></span><span>${escapeHtml(r.task.name)}</span>`;
-      div.title = isEditable ? r.task.name : tr("modal_readonly_title_dynamic", { id: r.task.name });
+      const overdue = daysOverdue(r.task);
+      div.className = "name-row" + (overdue ? " overdue" : "");
+      const owner = (r.task.owner || "").trim();
+      const ownerHtml = owner ? `<span class="task-owner">${escapeHtml(owner)}</span>` : "";
+      const overdueHtml = overdue
+        ? `<span class="overdue-badge" title="${escapeHtml(tr("overdue_days_title", { days: overdue }))}">${overdue}d</span>`
+        : "";
+      div.innerHTML = `<span class="indent"></span><span class="task-label">${escapeHtml(r.task.name)}</span>${ownerHtml}${overdueHtml}`;
+      const baseTitle = isEditable ? r.task.name : tr("modal_readonly_title_dynamic", { id: r.task.name });
+      div.title = overdue ? `${baseTitle} — ${tr("overdue_days_title", { days: overdue })}` : baseTitle;
       div.addEventListener("click", () => openEditModal(r.task.id));
     }
     body.appendChild(div);
@@ -688,6 +699,17 @@ function formatDate(d) {
   const mm = String(dt.getMonth() + 1).padStart(2, "0");
   const dd = String(dt.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
+}
+
+// Days past its end date for a task that isn't marked Done yet, or 0 if
+// it's on time / already finished. ISO YYYY-MM-DD strings compare
+// correctly with plain string comparison, so no date parsing needed.
+function daysOverdue(t) {
+  if (!t || t.status === "Done" || !t.end) return 0;
+  const todayStr = formatDate(new Date());
+  if (t.end >= todayStr) return 0;
+  const diffMs = parseLocalDate(todayStr) - parseLocalDate(t.end);
+  return Math.round(diffMs / 86400000);
 }
 
 /* ---------- Edit modal ---------- */
