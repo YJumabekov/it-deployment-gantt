@@ -137,7 +137,7 @@ body {
 }
 
 .name-col-header {
-  flex: 0 0 430px;
+  flex: 0 0 500px;
   height: 82px;
   display: flex;
   align-items: stretch;
@@ -151,7 +151,13 @@ body {
   letter-spacing: 0.02em;
 }
 
-.name-col-header .col-task { padding-left: 8px; }
+.name-col-header .col-task {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+}
 
 /* min-width:0 + normal wrapping so long, unbreakable translated words
    (e.g. Russian "ПРОСРОЧЕННОСТЬ") wrap onto a second line instead of
@@ -249,7 +255,7 @@ body {
    header_height/bar_height/padding options passed to `new Gantt()` in
    app.js — the name column is positioned by formula, not DOM measurement. */
 .name-col {
-  flex: 0 0 430px;
+  flex: 0 0 500px;
   border-right: 1px solid var(--border);
   background: var(--panel);
 }
