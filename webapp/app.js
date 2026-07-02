@@ -5,7 +5,16 @@
 */
 
 const STORAGE_KEY = "gantt_gh_config_v1";
+const COLLAPSE_KEY = "gantt_collapsed_phases_v1";
 const DATA_PATH = "webapp/tasks.json"; // path relative to repo root
+const PHASE_PREFIX = "__phase__";
+
+// Row geometry fed explicitly into `new Gantt()` below so the name column
+// can position rows by formula instead of measuring the rendered SVG.
+const HEADER_HEIGHT = 50;
+const BAR_HEIGHT = 20;
+const BAR_PADDING = 18;
+const ROW_HEIGHT = BAR_HEIGHT + BAR_PADDING;
 
 let tasks = [];
 let gantt = null;
@@ -13,6 +22,7 @@ let currentViewMode = "Month";
 let fileSha = null; // sha of tasks.json as last fetched via the API (null when read-only)
 let dirty = false;
 let editingTaskId = null; // task currently open in the edit modal, or null for "new task"
+let collapsedPhases = new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY) || "[]"));
 
 const el = (id) => document.getElementById(id);
 
@@ -138,31 +148,128 @@ function addDays(dateStr, n) {
   return formatDate(d);
 }
 
-function toGanttTasks() {
-  return tasks.map((t) => ({
-    id: t.id,
-    name: t.type === "Milestone" && !t.name.startsWith("◆") ? "◆ " + t.name : t.name,
-    start: t.start,
-    end: addDays(t.end, 1),
-    progress: t.progress || 0,
-    dependencies: t.dependencies || "",
-    custom_class:
-      `phase-${phaseNumber(t.phase)}` + (t.type === "Milestone" ? " milestone" : ""),
-  }));
+function phaseParentId(phaseLabel) {
+  return PHASE_PREFIX + phaseLabel;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Phases aren't stored as separate tasks — they're derived on every render
+// from the distinct `phase` values already on each task, in first-seen
+// order, so adding/removing tasks automatically keeps phases in sync.
+// Each phase becomes a collapsible synthetic parent row spanning the
+// min/max dates of its children.
+function buildRenderRows() {
+  const phaseOrder = [];
+  const phaseGroups = {};
+  tasks.forEach((t) => {
+    if (!phaseGroups[t.phase]) {
+      phaseGroups[t.phase] = [];
+      phaseOrder.push(t.phase);
+    }
+    phaseGroups[t.phase].push(t);
+  });
+
+  const rows = [];
+  phaseOrder.forEach((phaseLabel) => {
+    const children = phaseGroups[phaseLabel];
+    const collapsed = collapsedPhases.has(phaseLabel);
+    const phaseRow = {
+      id: phaseParentId(phaseLabel),
+      name: phaseLabel,
+      phase: phaseLabel,
+      start: children.map((c) => c.start).reduce((a, b) => (a < b ? a : b)),
+      end: children.map((c) => c.end).reduce((a, b) => (a > b ? a : b)),
+      isPhaseParent: true,
+      collapsed,
+    };
+    rows.push({ task: phaseRow, isPhaseParent: true });
+    if (!collapsed) {
+      children.forEach((c) => rows.push({ task: c, isPhaseParent: false }));
+    }
+  });
+  return rows;
+}
+
+function toGanttTasks(rows) {
+  const visibleIds = new Set(rows.map((r) => r.task.id));
+  const taskById = {};
+  tasks.forEach((t) => (taskById[t.id] = t));
+
+  return rows.map(({ task: t, isPhaseParent }) => {
+    if (isPhaseParent) {
+      return {
+        id: t.id,
+        name: (t.collapsed ? "▶ " : "▼ ") + t.name,
+        start: t.start,
+        end: addDays(t.end, 1),
+        progress: 0,
+        dependencies: "",
+        custom_class: `phase-${phaseNumber(t.phase)} phase-parent`,
+      };
+    }
+    // If a dependency belongs to a currently-collapsed phase, point the
+    // arrow at that phase's summary bar instead of a hidden task.
+    const deps = (t.dependencies || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((depId) => {
+        if (visibleIds.has(depId)) return depId;
+        const depTask = taskById[depId];
+        return depTask ? phaseParentId(depTask.phase) : null;
+      })
+      .filter(Boolean)
+      .join(",");
+    return {
+      id: t.id,
+      name: t.type === "Milestone" && !t.name.startsWith("◆") ? "◆ " + t.name : t.name,
+      start: t.start,
+      end: addDays(t.end, 1),
+      progress: t.progress || 0,
+      dependencies: deps,
+      custom_class:
+        `phase-${phaseNumber(t.phase)}` + (t.type === "Milestone" ? " milestone" : ""),
+    };
+  });
+}
+
+function togglePhase(phaseLabel) {
+  if (collapsedPhases.has(phaseLabel)) {
+    collapsedPhases.delete(phaseLabel);
+  } else {
+    collapsedPhases.add(phaseLabel);
+  }
+  localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedPhases]));
+  renderGantt();
 }
 
 function renderGantt() {
+  const rows = buildRenderRows();
+
   // Frappe Gantt attaches its drag/click listeners directly to the SVG node
   // and never removes them, so reusing the same node across renders piles up
   // duplicate handlers that fight each other. Discarding and recreating the
   // node each time lets the old listeners get garbage-collected with it.
   const target = el("ganttTarget");
   target.innerHTML = "";
-  gantt = new Gantt(target, toGanttTasks(), {
+  gantt = new Gantt(target, toGanttTasks(rows), {
     view_mode: currentViewMode,
     date_format: "YYYY-MM-DD",
+    header_height: HEADER_HEIGHT,
+    bar_height: BAR_HEIGHT,
+    padding: BAR_PADDING,
     custom_popup_html: () => "", // we use our own modal instead of the built-in popup
     on_date_change: (task, start, end) => {
+      if (task.id.startsWith(PHASE_PREFIX)) {
+        showToast("Phase bars are calculated from their tasks — drag the tasks inside instead.", true);
+        setTimeout(renderGantt, 0);
+        return;
+      }
       if (!getConfig()) {
         showToast("Connect GitHub to drag and reschedule tasks.", true);
         // Defer the re-render: this callback runs inside the library's own
@@ -178,6 +285,10 @@ function renderGantt() {
       setDirty(true);
     },
     on_progress_change: (task, progress) => {
+      if (task.id.startsWith(PHASE_PREFIX)) {
+        setTimeout(renderGantt, 0);
+        return;
+      }
       if (!getConfig()) {
         showToast("Connect GitHub to update progress.", true);
         setTimeout(renderGantt, 0);
@@ -189,6 +300,33 @@ function renderGantt() {
       setDirty(true);
     },
   });
+
+  renderNameColumn(rows);
+}
+
+function renderNameColumn(rows) {
+  const body = el("nameColBody");
+  body.innerHTML = "";
+  body.style.height = `${rows.length * ROW_HEIGHT}px`;
+  rows.forEach((r, i) => {
+    const div = document.createElement("div");
+    const isEditable = !!getConfig();
+    div.style.top = `${i * ROW_HEIGHT}px`;
+    div.style.height = `${ROW_HEIGHT}px`;
+    if (r.isPhaseParent) {
+      div.className = "name-row phase-row";
+      const arrow = r.task.collapsed ? "▶" : "▼";
+      div.innerHTML = `<span class="toggle">${arrow}</span><span>${escapeHtml(r.task.name)}</span>`;
+      div.title = r.task.name;
+      div.addEventListener("click", () => togglePhase(r.task.phase));
+    } else {
+      div.className = "name-row";
+      div.innerHTML = `<span class="indent"></span><span>${escapeHtml(r.task.name)}</span>`;
+      div.title = isEditable ? r.task.name : `${r.task.name} (connect GitHub to edit)`;
+      div.addEventListener("click", () => openEditModal(r.task.id));
+    }
+    body.appendChild(div);
+  });
 }
 
 // Frappe Gantt only fires its own click callback on double-click (to avoid
@@ -196,9 +334,10 @@ function renderGantt() {
 // track mousedown/mouseup ourselves and open the modal only when the pointer
 // barely moved and released quickly — otherwise it was a drag/resize.
 function attachClickToEdit() {
-  // Bind on the outer container, which is never replaced, instead of the
-  // inner SVG, which renderGantt() discards and recreates on every render.
-  const svg = el("ganttContainer");
+  // Bind on #ganttTarget, which is never replaced, instead of the SVG (or
+  // Frappe's own wrapper div inside it), which renderGantt() discards and
+  // recreates on every render.
+  const svg = el("ganttTarget");
   let downPos = null;
   let downId = null;
 
@@ -222,7 +361,11 @@ function attachClickToEdit() {
     downPos = null;
     downId = null;
     if (dx < 5 && dy < 5 && dt < 500) {
-      openEditModal(id);
+      if (id.startsWith(PHASE_PREFIX)) {
+        togglePhase(id.slice(PHASE_PREFIX.length));
+      } else {
+        openEditModal(id);
+      }
     }
   });
 }
