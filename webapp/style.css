@@ -137,14 +137,14 @@ body {
 }
 
 .name-col-header {
-  flex: 0 0 380px;
-  height: 78px;
+  flex: 0 0 430px;
+  height: 82px;
   display: flex;
   align-items: stretch;
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   background: var(--panel);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: #666;
   text-transform: uppercase;
@@ -153,32 +153,56 @@ body {
 
 .name-col-header .col-task { padding-left: 8px; }
 
+/* min-width:0 + normal wrapping so long, unbreakable translated words
+   (e.g. Russian "ПРОСРОЧЕННОСТЬ") wrap onto a second line instead of
+   forcing the flex item wider than its column and throwing off alignment
+   with the rows below. */
 .name-col-header .col-owner {
-  flex: 0 0 130px;
+  flex: 0 0 140px;
+  min-width: 0;
   display: flex;
   align-items: center;
   padding: 0 8px;
   border-left: 1px solid var(--border);
+  white-space: normal;
+  line-height: 1.15;
+  word-break: break-word;
 }
 
 .name-col-header .col-overdue {
-  flex: 0 0 90px;
+  flex: 0 0 80px;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   border-left: 1px solid var(--border);
+  white-space: normal;
+  line-height: 1.15;
+  word-break: break-word;
 }
 
-/* The 78px total leaves ~18px below the 60px-tall date header content for
+/* The 82px total leaves room below the 60px-tall date header content for
    the header viewport's own horizontal scrollbar, so the scrollbar has
    its own space instead of overlapping the date labels above it. */
 .gantt-header-viewport {
   flex: 1;
   min-width: 0;
-  height: 78px;
+  height: 82px;
   overflow-x: auto;
   overflow-y: hidden;
   border-bottom: 1px solid var(--border);
+}
+
+/* Frappe's default 12px date-axis text reads as barely-there at a glance;
+   size it up and give the alternating month/year chips more breathing
+   room to match. Loaded after frappe-gantt.css, so this wins on the tie. */
+.gantt .upper-text {
+  font-size: 14px;
+}
+
+.gantt .lower-text {
+  font-size: 13px;
 }
 
 /* The cloned SVG inside the header viewport is purely a visual mirror —
@@ -221,11 +245,11 @@ body {
   margin-top: -60px;
 }
 
-/* Row geometry here (60px header, 38px rows) must stay in sync with the
+/* Row geometry here (60px header, 44px rows) must stay in sync with the
    header_height/bar_height/padding options passed to `new Gantt()` in
    app.js — the name column is positioned by formula, not DOM measurement. */
 .name-col {
-  flex: 0 0 380px;
+  flex: 0 0 430px;
   border-right: 1px solid var(--border);
   background: var(--panel);
 }
@@ -238,11 +262,11 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  height: 38px;
+  height: 44px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border);
-  font-size: 12.5px;
+  font-size: 13.5px;
   cursor: pointer;
 }
 
@@ -284,16 +308,20 @@ body {
   overflow: hidden;
 }
 
+/* Long task names wrap onto a second line instead of truncating — the
+   row is tall enough (44px) to fit two lines of this font size. */
 .task-label {
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.2;
 }
 
 .col-owner {
-  flex: 0 0 130px;
+  flex: 0 0 140px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -305,27 +333,30 @@ body {
 
 .avatar {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 23px;
+  height: 23px;
   border-radius: 50%;
   color: white;
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Long owner names also wrap rather than truncate. */
 .owner-name {
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 12.5px;
+  line-height: 1.2;
   color: #444;
 }
 
 .col-overdue {
-  flex: 0 0 90px;
+  flex: 0 0 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -336,7 +367,7 @@ body {
 .overdue-badge {
   background: #d43a3a;
   color: white;
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 9px;

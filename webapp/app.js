@@ -14,9 +14,9 @@ const PHASE_PREFIX = "__phase__";
 // Row geometry fed explicitly into `new Gantt()` below so the name column
 // can position rows by formula instead of measuring the rendered SVG.
 const HEADER_HEIGHT = 50;
-const BAR_HEIGHT = 20;
-const BAR_PADDING = 18;
-const ROW_HEIGHT = BAR_HEIGHT + BAR_PADDING;
+const BAR_HEIGHT = 24;
+const BAR_PADDING = 20;
+const ROW_HEIGHT = BAR_HEIGHT + BAR_PADDING; // taller rows give text room to wrap instead of truncating
 
 let projects = [];
 let currentProjectId = null;
