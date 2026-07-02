@@ -102,6 +102,8 @@ const I18N = {
     prompt_new_project_name: "New project name:",
     empty_project: "This project has no tasks yet. Click \"+ Add task\" to get started.",
     overdue_days_title: "{days} day(s) overdue",
+    col_owner: "Owner",
+    col_overdue: "Overdue",
   },
   ru: {
     app_title: "Диаграмма Ганта",
@@ -169,6 +171,8 @@ const I18N = {
     prompt_new_project_name: "Название нового проекта:",
     empty_project: "В этом проекте пока нет задач. Нажмите «+ Задача», чтобы начать.",
     overdue_days_title: "Просрочено на {days} дн.",
+    col_owner: "Исполнитель",
+    col_overdue: "Просроченность",
   },
 };
 
@@ -620,6 +624,33 @@ function colorizeHeaderClone(svg) {
   });
 }
 
+const AVATAR_COLORS = ["#2f6fed", "#4caf82", "#d7a03d", "#9b6bd7", "#d76b6b", "#4fb0c6", "#6b6b6b"];
+
+function ownerColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+}
+
+function ownerCellHtml(owner) {
+  const name = (owner || "").trim();
+  if (!name) return `<span class="col-owner"></span>`;
+  const initial = escapeHtml(name[0].toUpperCase());
+  const color = ownerColor(name);
+  return (
+    `<span class="col-owner" title="${escapeHtml(name)}">` +
+    `<span class="avatar" style="background:${color}">${initial}</span>` +
+    `<span class="owner-name">${escapeHtml(name)}</span></span>`
+  );
+}
+
+function overdueCellHtml(overdueDays) {
+  if (!overdueDays) return `<span class="col-overdue"></span>`;
+  const label = `${overdueDays}d`;
+  const titleText = escapeHtml(tr("overdue_days_title", { days: overdueDays }));
+  return `<span class="col-overdue"><span class="overdue-badge" title="${titleText}">${label}</span></span>`;
+}
+
 function renderNameColumn(rows) {
   const body = el("nameColBody");
   body.innerHTML = "";
@@ -632,18 +663,18 @@ function renderNameColumn(rows) {
     if (r.isPhaseParent) {
       div.className = "name-row phase-row";
       const arrow = r.task.collapsed ? "▶" : "▼";
-      div.innerHTML = `<span class="toggle">${arrow}</span><span>${escapeHtml(r.task.name)}</span>`;
+      div.innerHTML =
+        `<span class="col-task"><span class="toggle">${arrow}</span><span class="task-label">${escapeHtml(r.task.name)}</span></span>` +
+        `<span class="col-owner"></span><span class="col-overdue"></span>`;
       div.title = r.task.name;
       div.addEventListener("click", () => togglePhase(r.task.phase));
     } else {
       const overdue = daysOverdue(r.task);
       div.className = "name-row" + (overdue ? " overdue" : "");
-      const owner = (r.task.owner || "").trim();
-      const ownerHtml = owner ? `<span class="task-owner">${escapeHtml(owner)}</span>` : "";
-      const overdueHtml = overdue
-        ? `<span class="overdue-badge" title="${escapeHtml(tr("overdue_days_title", { days: overdue }))}">${overdue}d</span>`
-        : "";
-      div.innerHTML = `<span class="indent"></span><span class="task-label">${escapeHtml(r.task.name)}</span>${ownerHtml}${overdueHtml}`;
+      div.innerHTML =
+        `<span class="col-task"><span class="indent"></span><span class="task-label">${escapeHtml(r.task.name)}</span></span>` +
+        ownerCellHtml(r.task.owner) +
+        overdueCellHtml(overdue);
       const baseTitle = isEditable ? r.task.name : tr("modal_readonly_title_dynamic", { id: r.task.name });
       div.title = overdue ? `${baseTitle} — ${tr("overdue_days_title", { days: overdue })}` : baseTitle;
       div.addEventListener("click", () => openEditModal(r.task.id));

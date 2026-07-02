@@ -137,17 +137,45 @@ body {
 }
 
 .name-col-header {
-  flex: 0 0 260px;
-  height: 60px;
+  flex: 0 0 380px;
+  height: 78px;
+  display: flex;
+  align-items: stretch;
   border-bottom: 1px solid var(--border);
   border-right: 1px solid var(--border);
   background: var(--panel);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
+.name-col-header .col-task { padding-left: 8px; }
+
+.name-col-header .col-owner {
+  flex: 0 0 130px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-left: 1px solid var(--border);
+}
+
+.name-col-header .col-overdue {
+  flex: 0 0 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border);
+}
+
+/* The 78px total leaves ~18px below the 60px-tall date header content for
+   the header viewport's own horizontal scrollbar, so the scrollbar has
+   its own space instead of overlapping the date labels above it. */
 .gantt-header-viewport {
   flex: 1;
   min-width: 0;
-  height: 60px;
+  height: 78px;
   overflow-x: auto;
   overflow-y: hidden;
   border-bottom: 1px solid var(--border);
@@ -197,7 +225,7 @@ body {
    header_height/bar_height/padding options passed to `new Gantt()` in
    app.js — the name column is positioned by formula, not DOM measurement. */
 .name-col {
-  flex: 0 0 260px;
+  flex: 0 0 380px;
   border-right: 1px solid var(--border);
   background: var(--panel);
 }
@@ -213,13 +241,9 @@ body {
   height: 38px;
   display: flex;
   align-items: center;
-  padding-left: 8px;
   border-bottom: 1px solid var(--border);
   font-size: 12.5px;
   cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .name-row:hover { background: #f5f6f8; }
@@ -248,6 +272,18 @@ body {
   flex-shrink: 0;
 }
 
+/* Three-column layout: task name (flexible) | owner (avatar + name) |
+   overdue badge — widths here must match .col-owner/.col-overdue in the
+   header labels above so the columns line up. */
+.col-task {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  overflow: hidden;
+}
+
 .task-label {
   flex: 1;
   min-width: 0;
@@ -256,26 +292,55 @@ body {
   white-space: nowrap;
 }
 
-.task-owner {
+.col-owner {
+  flex: 0 0 130px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+  height: 100%;
+}
+
+.avatar {
   flex-shrink: 0;
-  max-width: 76px;
-  margin-left: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: white;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.owner-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 11px;
-  color: #888;
+  font-size: 12px;
+  color: #444;
+}
+
+.col-overdue {
+  flex: 0 0 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  border-left: 1px solid var(--border);
 }
 
 .overdue-badge {
-  flex-shrink: 0;
-  margin-left: 6px;
   background: #d43a3a;
   color: white;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 8px;
+  padding: 2px 8px;
+  border-radius: 9px;
+  white-space: nowrap;
 }
 
 /* Phase colour coding on Frappe Gantt bars */
@@ -295,6 +360,23 @@ body {
    takes precedence when specificity + !important tie with the rules above. */
 .overdue .bar { fill: #d43a3a !important; }
 .overdue .bar-progress { fill: #a11212 !important; }
+
+/* Frappe's default tick lines (day/week/month boundaries) are barely
+   visible (stroke-width 0.2). Dotted for regular ticks, solid and darker
+   for "thick" ticks (bigger boundaries — e.g. month starts in Day view,
+   quarter starts in Month view) so the eye can follow a column down the
+   whole chart at a glance. */
+.gantt .tick {
+  stroke: #c9ced5;
+  stroke-width: 1;
+  stroke-dasharray: 2, 3;
+}
+
+.gantt .tick.thick {
+  stroke: #9aa1ab;
+  stroke-width: 1.3;
+  stroke-dasharray: none;
+}
 
 /* Task names now live in the name column, so hide Frappe's own in-chart
    labels to avoid showing every name twice. */
