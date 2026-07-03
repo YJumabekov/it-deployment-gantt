@@ -573,7 +573,7 @@
           "status": "In Review",
           "owner": "Данияр",
           "progress": 90,
-          "dependencies": "",
+          "dependencies": "t1_3",
           "notes": "",
           "links": []
         },
