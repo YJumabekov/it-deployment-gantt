@@ -1125,15 +1125,15 @@
         },
         {
           "id": "t6_3",
-          "name": "Подготовить материалы обучения для админов / Prepare admin training materials",
+          "name": "Подготовить материалы обучения для админов (Арай) / Prepare admin training materials (Arai)",
           "phase": "Фаза 6 — Управление изменениями и обучение / Change Management & Training",
           "start": "2026-08-25",
           "end": "2026-08-30",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "m4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
