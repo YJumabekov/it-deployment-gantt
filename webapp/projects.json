@@ -37,17 +37,18 @@
         },
         {
           "id": "p1_stake",
-          "name": "◆ Stakeholder alignment & sign-off",
+          "name": "Изучение текущего подхода и методологии разработки материалов курсов",
           "start": "2026-07-06",
-          "end": "2026-07-06",
+          "end": "2026-07-10",
           "progress": 0,
-          "dependencies": "p1_charter",
+          "dependencies": "",
           "custom_class": "phase-1 milestone",
           "phase": "Фаза 1 — Изучение и исследование",
-          "type": "Milestone",
-          "owner": "TBD",
+          "type": "Task",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p1_req",
