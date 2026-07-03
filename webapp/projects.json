@@ -803,7 +803,7 @@
         },
         {
           "id": "t3_4",
-          "name": "Согласовать вендора и параметры прокторинга / Finalize proctoring vendor and settings decision",
+          "name": "Зарегестрировать работников Алстом в системе / Register Alstom employees in Moodle",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
           "start": "2026-07-07",
           "end": "2026-07-11",
@@ -812,7 +812,7 @@
           "owner": "",
           "progress": 0,
           "dependencies": "t3_1",
-          "notes": "Внешняя зависимость (вендор). / External dependency (vendor).",
+          "notes": "",
           "links": []
         },
         {
