@@ -202,17 +202,18 @@
         },
         {
           "id": "p3_int",
-          "name": "Integrations build",
-          "start": "2026-08-11",
-          "end": "2026-08-24",
+          "name": "Разработка контента первого курса по утвержденному шаблону",
+          "start": "2026-07-20",
+          "end": "2026-08-28",
           "progress": 0,
-          "dependencies": "p3_env",
+          "dependencies": "",
           "custom_class": "phase-3",
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_cust",
