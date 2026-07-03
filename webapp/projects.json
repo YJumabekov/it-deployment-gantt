@@ -769,7 +769,7 @@
           "status": "Not Started",
           "owner": "",
           "progress": 0,
-          "dependencies": "t1_1",
+          "dependencies": "",
           "notes": "Может идти параллельно с фазами 1-2. / Can run in parallel with Phases 1-2.",
           "links": []
         },
