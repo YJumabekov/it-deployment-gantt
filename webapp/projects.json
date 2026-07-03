@@ -157,17 +157,18 @@
         },
         {
           "id": "p2_gate",
-          "name": "◆ Gate 2 - Design sign-off",
-          "start": "2026-08-04",
-          "end": "2026-08-04",
+          "name": "Веха: Концепция утверждена",
+          "start": "2026-07-16",
+          "end": "2026-07-17",
           "progress": 0,
-          "dependencies": "p2_data,p2_sec,p2_ux",
+          "dependencies": "",
           "custom_class": "phase-2 milestone",
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Milestone",
-          "owner": "TBD",
+          "owner": "Алтынай, Ерганат, Тимур",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_env",
@@ -175,13 +176,14 @@
           "start": "2026-08-05",
           "end": "2026-08-10",
           "progress": 0,
-          "dependencies": "p2_gate",
+          "dependencies": "",
           "custom_class": "phase-3",
           "phase": "Phase 3 - Build & Configuration",
           "type": "Task",
           "owner": "TBD",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_core",
