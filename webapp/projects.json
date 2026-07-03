@@ -601,7 +601,7 @@
           "status": "Not Started",
           "owner": "Данияр",
           "progress": 0,
-          "dependencies": "",
+          "dependencies": "t2_3",
           "notes": "",
           "links": []
         },
@@ -713,7 +713,7 @@
           "status": "Not Started",
           "owner": "",
           "progress": 0,
-          "dependencies": "t2_2,t2_3",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
