@@ -649,7 +649,7 @@
         },
         {
           "id": "m1",
-          "name": "Разработка завершена / Development complete",
+          "name": "Зафиксировать список функций для релиза / Freeze feature list for release",
           "phase": "Фаза 1 — Разработка / Development",
           "start": "2026-07-30",
           "end": "2026-07-30",
