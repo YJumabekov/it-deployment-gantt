@@ -802,20 +802,6 @@
           "links": []
         },
         {
-          "id": "t3_4",
-          "name": "Определить и согласовать объект и план внедрения с Алстом / Define and align deployment area and plan with Alstom",
-          "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
-          "start": "2026-07-06",
-          "end": "2026-07-17",
-          "type": "Task",
-          "status": "Not Started",
-          "owner": "Тимур, Ерганат, Данияр",
-          "progress": 0,
-          "dependencies": "",
-          "notes": "",
-          "links": []
-        },
-        {
           "id": "t3_5",
           "name": "Согласовать список подписантов ЭЦП и корп. почты / Confirm EDS signatories list and corporate emails",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
@@ -839,7 +825,7 @@
           "status": "Not Started",
           "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
-          "dependencies": "t3_4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
@@ -951,7 +937,7 @@
           "status": "Not Started",
           "owner": "",
           "progress": 0,
-          "dependencies": "t3_4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
@@ -1496,6 +1482,20 @@
           "type": "Task",
           "status": "Not Started",
           "owner": "Данияр",
+          "progress": 0,
+          "dependencies": "",
+          "notes": "",
+          "links": []
+        },
+        {
+          "id": "define_and_align_deployment_ar_mr4tyzqx",
+          "name": "Определить и согласовать объект и план внедрения с Алстом / Define and align deployment area and plan with Alstom",
+          "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
+          "start": "2026-07-13",
+          "end": "2026-07-24",
+          "type": "Task",
+          "status": "Not Started",
+          "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
           "dependencies": "",
           "notes": "",
