@@ -397,17 +397,18 @@
         },
         {
           "id": "p6_cutplan",
-          "name": "Cutover plan finalization",
-          "start": "2026-10-16",
-          "end": "2026-10-20",
+          "name": "Разработка курса №3",
+          "start": "2026-08-10",
+          "end": "2026-08-14",
           "progress": 0,
-          "dependencies": "p4_gate",
+          "dependencies": "",
           "custom_class": "phase-6",
           "phase": "Фаза 6 — Создание следующих курсов",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p6_rehearse",
