@@ -81,26 +81,12 @@
           "links": []
         },
         {
-          "id": "p1_plan",
-          "name": "Resource & budget planning",
-          "start": "2026-07-13",
-          "end": "2026-07-15",
-          "progress": 0,
-          "dependencies": "p1_req",
-          "custom_class": "phase-1",
-          "phase": "Фаза 1 — Изучение и исследование",
-          "type": "Task",
-          "owner": "TBD",
-          "status": "Not Started",
-          "notes": ""
-        },
-        {
           "id": "p1_gate",
           "name": "◆ Gate 1 - Planning sign-off",
           "start": "2026-07-16",
           "end": "2026-07-16",
           "progress": 0,
-          "dependencies": "p1_plan,p1_risk",
+          "dependencies": "p1_risk",
           "custom_class": "phase-1 milestone",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Milestone",
