@@ -696,9 +696,9 @@
           "start": "2026-07-01",
           "end": "2026-07-17",
           "type": "Task",
-          "status": "Not Started",
+          "status": "In Progress",
           "owner": "Данияр",
-          "progress": 0,
+          "progress": 30,
           "dependencies": "",
           "notes": "",
           "links": []
@@ -726,7 +726,7 @@
           "type": "Task",
           "status": "In Progress",
           "owner": "Данияр",
-          "progress": 0,
+          "progress": 90,
           "dependencies": "",
           "notes": "",
           "links": []
