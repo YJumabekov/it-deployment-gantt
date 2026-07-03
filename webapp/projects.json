@@ -1257,9 +1257,9 @@
           "end": "2026-09-26",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
-          "dependencies": "m7",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
