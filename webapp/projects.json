@@ -1271,9 +1271,9 @@
           "end": "2026-09-26",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "m7",
+          "dependencies": "",
           "notes": "Идёт параллельно с 8.1 в течение всего периода поддержки. / Runs in parallel with 8.1 for the whole support period.",
           "links": []
         },
