@@ -217,17 +217,18 @@
         },
         {
           "id": "p3_cust",
-          "name": "Customizations & workflow build",
-          "start": "2026-09-01",
-          "end": "2026-09-10",
+          "name": "Внутреннее ревью контента (руководитель/коллеги)",
+          "start": "2026-07-23",
+          "end": "2026-07-24",
           "progress": 0,
-          "dependencies": "p3_core",
+          "dependencies": "",
           "custom_class": "phase-3",
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай, Ерганат, Тимур",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_doc",
