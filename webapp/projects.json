@@ -127,17 +127,18 @@
         },
         {
           "id": "p2_data",
-          "name": "Data model & integration design",
-          "start": "2026-07-28",
-          "end": "2026-08-03",
+          "name": "Разработать шаблон/гайдлайн создания курса на основе выбранного подхода",
+          "start": "2026-07-12",
+          "end": "2026-07-17",
           "progress": 0,
-          "dependencies": "p2_arch",
+          "dependencies": "",
           "custom_class": "phase-2",
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p2_sec",
