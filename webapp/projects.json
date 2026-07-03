@@ -67,17 +67,18 @@
         },
         {
           "id": "p1_risk",
-          "name": "Risk & compliance assessment",
+          "name": "Систематизация находок, подготовка отчета по итогам исследования",
           "start": "2026-07-07",
-          "end": "2026-07-09",
+          "end": "2026-07-10",
           "progress": 0,
-          "dependencies": "p1_stake",
+          "dependencies": "",
           "custom_class": "phase-1",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p1_plan",
