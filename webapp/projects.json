@@ -1005,9 +1005,9 @@
           "end": "2026-08-08",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "m3",
+          "dependencies": "",
           "notes": "Может идти параллельно с Фазой 4. / Can run parallel to Phase 4.",
           "links": []
         },
@@ -1019,9 +1019,9 @@
           "end": "2026-08-09",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t5_1",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
