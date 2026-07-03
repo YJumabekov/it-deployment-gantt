@@ -68,7 +68,7 @@
         {
           "id": "p1_risk",
           "name": "Систематизация находок, подготовка отчета по итогам исследования",
-          "start": "2026-07-07",
+          "start": "2026-07-06",
           "end": "2026-07-10",
           "progress": 0,
           "dependencies": "",
@@ -82,17 +82,18 @@
         },
         {
           "id": "p1_gate",
-          "name": "◆ Gate 1 - Planning sign-off",
-          "start": "2026-07-16",
-          "end": "2026-07-16",
+          "name": "Веха: Исследование завершено",
+          "start": "2026-07-06",
+          "end": "2026-07-10",
           "progress": 0,
-          "dependencies": "p1_risk",
+          "dependencies": "",
           "custom_class": "phase-1 milestone",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Milestone",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p2_arch",
