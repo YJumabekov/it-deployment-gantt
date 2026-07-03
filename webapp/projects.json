@@ -277,17 +277,18 @@
         },
         {
           "id": "p4_perf",
-          "name": "Performance & load testing",
-          "start": "2026-09-22",
-          "end": "2026-09-25",
+          "name": "Анализ проблем и извлеченных уроков (lessons learned)",
+          "start": "2026-07-30",
+          "end": "2026-07-31",
           "progress": 0,
-          "dependencies": "p4_unit",
+          "dependencies": "",
           "custom_class": "phase-4",
           "phase": "Фаза 4 — Извлечение уроков и финализация концепта",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p4_secTest",
