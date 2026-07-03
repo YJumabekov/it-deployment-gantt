@@ -187,17 +187,18 @@
         },
         {
           "id": "p3_core",
-          "name": "Core development / configuration",
-          "start": "2026-08-11",
-          "end": "2026-08-31",
+          "name": "Определение перечня материалов, которые должен содержать курс (видео, тесты, документы, и т.д.)",
+          "start": "2026-07-20",
+          "end": "2026-07-24",
           "progress": 0,
-          "dependencies": "p3_env",
+          "dependencies": "",
           "custom_class": "phase-3",
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_int",
