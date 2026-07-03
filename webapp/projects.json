@@ -810,9 +810,9 @@
           "start": "2026-07-01",
           "end": "2026-07-24",
           "type": "Task",
-          "status": "Blocked",
+          "status": "In Progress",
           "owner": "Арай",
-          "progress": 0,
+          "progress": 60,
           "dependencies": "",
           "notes": "Обновить/проверить контактные данные пользователей / Update/validate user contact data",
           "links": []
