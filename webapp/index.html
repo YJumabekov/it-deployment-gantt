@@ -18,6 +18,10 @@
     </div>
     <div class="topbar-controls">
       <div class="view-modes">
+        <button id="viewGanttBtn" class="view-switch active" data-i18n="view_gantt">Gantt</button>
+        <button id="viewBoardBtn" class="view-switch" data-i18n="view_board">Board</button>
+      </div>
+      <div class="view-modes" id="ganttViewModes">
         <button data-mode="Day" data-i18n="view_day">Day</button>
         <button data-mode="Week" data-i18n="view_week">Week</button>
         <button data-mode="Month" class="active" data-i18n="view_month">Month</button>
@@ -31,6 +35,10 @@
       <button id="langToggle" class="btn btn-secondary lang-toggle" title="Switch language / Переключить язык">RU</button>
     </div>
   </header>
+
+  <div id="kanbanContainer" class="hidden">
+    <div class="kanban-board" id="kanbanBoard"></div>
+  </div>
 
   <div id="ganttContainer">
     <div class="gantt-frozen-header">
@@ -77,13 +85,7 @@
           </select>
         </label>
         <label><span data-i18n="field_status">Status</span>
-          <select id="f_status">
-            <option value="Not Started" data-i18n="status_not_started">Not Started</option>
-            <option value="In Progress" data-i18n="status_in_progress">In Progress</option>
-            <option value="Blocked" data-i18n="status_blocked">Blocked</option>
-            <option value="In Review" data-i18n="status_in_review">In Review</option>
-            <option value="Done" data-i18n="status_done">Done</option>
-          </select>
+          <select id="f_status"></select>
         </label>
       </div>
       <div class="row">

@@ -141,6 +141,7 @@ body {
 .status-readonly { background: #f0e6c8; color: #7a5c00; }
 .status-editable { background: #d8f0e0; color: #0d6b3a; }
 .status-dirty { background: #fbdede; color: #a11; }
+.status-saving { background: #dce8fb; color: #2f5fc7; }
 
 #ganttContainer {
   padding: 20px;
@@ -446,12 +447,14 @@ body {
    preview line shown while dragging one to another task. */
 .dep-connector {
   fill: var(--accent);
-  opacity: 0.5;
+  stroke: white;
+  stroke-width: 2;
+  opacity: 0.9;
   cursor: crosshair;
-  transition: opacity 0.1s ease;
+  transition: opacity 0.1s ease, r 0.1s ease;
 }
 
-.dep-connector:hover { opacity: 1; }
+.dep-connector:hover { opacity: 1; r: 7; }
 
 .dep-connector-preview {
   stroke: var(--accent);
@@ -459,6 +462,132 @@ body {
   stroke-dasharray: 4, 3;
   pointer-events: none;
 }
+
+/* ---------- Kanban board view ---------- */
+
+#kanbanContainer { padding: 20px; }
+
+.kanban-board {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  flex: 0 0 260px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 78vh;
+}
+
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 10px 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.kanban-column-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kanban-column-count {
+  font-weight: 400;
+  color: #888;
+  font-size: 12px;
+  background: #e4e6ea;
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+
+.kanban-column-header .icon-btn {
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  cursor: pointer;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.kanban-column-header .icon-btn:hover { background: #e2e5ea; }
+
+.kanban-card-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 10px;
+  min-height: 60px;
+}
+
+.kanban-card-list.drag-over { background: #e2e8fb; border-radius: 6px; }
+
+.kanban-card {
+  background: white;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  font-size: 13px;
+}
+
+.kanban-card:active { cursor: grabbing; }
+.kanban-card.overdue { border-left: 3px solid #d43a3a; }
+
+.kanban-card-title { margin-bottom: 6px; font-weight: 500; line-height: 1.3; }
+
+.kanban-phase-tag {
+  display: inline-block;
+  font-size: 10.5px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  color: white;
+  margin-bottom: 6px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kanban-phase-tag.phase-1 { background: var(--phase-1); }
+.kanban-phase-tag.phase-2 { background: var(--phase-2); }
+.kanban-phase-tag.phase-3 { background: var(--phase-3); }
+.kanban-phase-tag.phase-4 { background: var(--phase-4); }
+.kanban-phase-tag.phase-5 { background: var(--phase-5); }
+.kanban-phase-tag.phase-6 { background: var(--phase-6); }
+.kanban-phase-tag.phase-7 { background: var(--phase-7); }
+
+.kanban-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kanban-owner-name { font-size: 11.5px; color: #666; }
+
+.kanban-add-column {
+  flex: 0 0 200px;
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  color: #666;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.kanban-add-column:hover { background: #eceef1; }
 
 /* Task names now live in the name column, so hide Frappe's own in-chart
    labels to avoid showing every name twice. */

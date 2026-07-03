@@ -12,6 +12,7 @@
         "Phase 6 - Deployment / Go-Live",
         "Phase 7 - Hypercare & Closeout"
       ],
+      "statuses": ["Not Started", "In Progress", "Blocked", "In Review", "Done"],
       "tasks": [
         {
           "id": "p1_charter",

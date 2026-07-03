@@ -38,12 +38,15 @@ const el = (id) => document.getElementById(id);
 const I18N = {
   en: {
     app_title: "Gantt Chart",
+    view_gantt: "Gantt",
+    view_board: "Board",
     view_day: "Day",
     view_week: "Week",
     view_month: "Month",
     view_year: "Year",
     btn_add_task: "+ Add task",
     btn_add_phase: "+ Phase",
+    btn_add_column: "+ Column",
     btn_new_project: "+ Project",
     btn_save_changes: "Save changes",
     btn_connect: "Connect GitHub to edit",
@@ -127,15 +130,31 @@ const I18N = {
     toast_dep_cycle: "That would create a circular dependency.",
     toast_dep_connect_readonly: "Connect GitHub to link dependencies.",
     dep_connector_hint: "Drag to another task to add a dependency",
+    status_saving: "Saving…",
+    toast_autosaved: "Autosaved.",
+    confirm_restore_draft: "Unsaved changes from a previous session were found on this device. Restore them?",
+    toast_draft_restored: "Restored your unsaved changes.",
+    title_rename_status: "Rename column",
+    title_delete_status: "Delete column",
+    prompt_add_status_name: "New column name:",
+    prompt_rename_status_name: "Rename column to:",
+    err_status_duplicate: "A column with that name already exists.",
+    confirm_delete_status_with_tasks: "Delete column \"{name}\"? Its {count} task(s) will move to the first remaining column.",
+    confirm_delete_status_empty: "Delete column \"{name}\"?",
+    toast_cannot_delete_last_status: "Can't delete the only column.",
+    toast_board_readonly: "Connect GitHub to move tasks between columns.",
   },
   ru: {
     app_title: "Диаграмма Ганта",
+    view_gantt: "Гант",
+    view_board: "Доска",
     view_day: "День",
     view_week: "Неделя",
     view_month: "Месяц",
     view_year: "Год",
     btn_add_task: "+ Задача",
     btn_add_phase: "+ Этап",
+    btn_add_column: "+ Колонка",
     btn_new_project: "+ Проект",
     btn_save_changes: "Сохранить",
     btn_connect: "Подключить GitHub для редактирования",
@@ -219,6 +238,19 @@ const I18N = {
     toast_dep_cycle: "Это создаст циклическую зависимость.",
     toast_dep_connect_readonly: "Подключите GitHub, чтобы связывать зависимости.",
     dep_connector_hint: "Перетащите на другую задачу, чтобы добавить зависимость",
+    status_saving: "Сохранение…",
+    toast_autosaved: "Автосохранено.",
+    confirm_restore_draft: "На этом устройстве найдены несохранённые изменения из прошлой сессии. Восстановить их?",
+    toast_draft_restored: "Несохранённые изменения восстановлены.",
+    title_rename_status: "Переименовать колонку",
+    title_delete_status: "Удалить колонку",
+    prompt_add_status_name: "Название новой колонки:",
+    prompt_rename_status_name: "Переименовать колонку в:",
+    err_status_duplicate: "Колонка с таким названием уже существует.",
+    confirm_delete_status_with_tasks: "Удалить колонку «{name}»? Её задачи ({count}) переместятся в первую оставшуюся колонку.",
+    confirm_delete_status_empty: "Удалить колонку «{name}»?",
+    toast_cannot_delete_last_status: "Нельзя удалить единственную колонку.",
+    toast_board_readonly: "Подключите GitHub, чтобы перемещать задачи между колонками.",
   },
 };
 
@@ -265,7 +297,7 @@ function setLang(lang) {
   applyStaticTranslations();
   setDirty(dirty); // refresh the status pill text in the new language
   renderProjectSelector();
-  renderGantt();
+  renderCurrentView();
 }
 
 function getConfig() {
@@ -326,6 +358,80 @@ function setDirty(value) {
     pill.textContent = tr("status_connected");
     pill.className = "status-pill status-editable";
   }
+  if (value) {
+    saveLocalDraft();
+    scheduleAutosave();
+  } else {
+    cancelAutosaveTimers();
+  }
+}
+
+// Local safety net: every edit is mirrored into localStorage immediately,
+// independent of any GitHub connection, so a dropped connection or a
+// closed tab doesn't lose work — it's offered back on next load.
+const LOCAL_DRAFT_KEY = "gantt_local_draft_v1";
+
+function saveLocalDraft() {
+  const cur = getCurrentProject();
+  if (cur) cur.tasks = tasks;
+  try {
+    localStorage.setItem(LOCAL_DRAFT_KEY, JSON.stringify({ projects, savedAt: Date.now() }));
+  } catch (e) {
+    /* localStorage full/unavailable — autosave-to-GitHub still applies */
+  }
+}
+
+function clearLocalDraft() {
+  localStorage.removeItem(LOCAL_DRAFT_KEY);
+}
+
+function maybeRestoreLocalDraft() {
+  let draft;
+  try {
+    draft = JSON.parse(localStorage.getItem(LOCAL_DRAFT_KEY) || "null");
+  } catch (e) {
+    draft = null;
+  }
+  if (!draft || !Array.isArray(draft.projects) || !draft.projects.length) return;
+  if (confirm(tr("confirm_restore_draft"))) {
+    projects = draft.projects;
+    selectInitialProject();
+    setDirty(true);
+    renderProjectSelector();
+    renderCurrentView();
+    showToast(tr("toast_draft_restored"));
+  } else {
+    clearLocalDraft();
+  }
+}
+
+// Autosave: a short debounce after the last edit, plus a hard ceiling so
+// continuous editing still gets persisted periodically rather than never.
+const AUTOSAVE_DEBOUNCE_MS = 8000;
+const AUTOSAVE_MAX_WAIT_MS = 45000;
+let autosaveDebounceTimer = null;
+let autosaveMaxTimer = null;
+
+function scheduleAutosave() {
+  if (!getConfig()) return;
+  clearTimeout(autosaveDebounceTimer);
+  autosaveDebounceTimer = setTimeout(runAutosave, AUTOSAVE_DEBOUNCE_MS);
+  if (!autosaveMaxTimer) {
+    autosaveMaxTimer = setTimeout(runAutosave, AUTOSAVE_MAX_WAIT_MS);
+  }
+}
+
+function cancelAutosaveTimers() {
+  clearTimeout(autosaveDebounceTimer);
+  clearTimeout(autosaveMaxTimer);
+  autosaveDebounceTimer = null;
+  autosaveMaxTimer = null;
+}
+
+async function runAutosave() {
+  cancelAutosaveTimers();
+  if (!dirty || !getConfig()) return;
+  await saveChanges(true);
 }
 
 async function apiRequest(cfg, method, body) {
@@ -391,7 +497,7 @@ function switchProject(id) {
   const proj = getCurrentProject();
   tasks = proj ? proj.tasks : [];
   renderProjectSelector();
-  renderGantt();
+  renderCurrentView();
 }
 
 function addProject() {
@@ -406,7 +512,7 @@ function addProject() {
   tasks = getCurrentProject().tasks;
   setDirty(true);
   renderProjectSelector();
-  renderGantt();
+  renderCurrentView();
 }
 
 function renameProject() {
@@ -433,7 +539,7 @@ function deleteProject() {
   tasks = getCurrentProject().tasks;
   setDirty(true);
   renderProjectSelector();
-  renderGantt();
+  renderCurrentView();
 }
 
 function addPhase() {
@@ -448,7 +554,7 @@ function addPhase() {
   }
   proj.phases.push(name);
   setDirty(true);
-  renderGantt();
+  renderCurrentView();
 }
 
 function renamePhase(oldName) {
@@ -472,7 +578,7 @@ function renamePhase(oldName) {
     localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedPhases]));
   }
   setDirty(true);
-  renderGantt();
+  renderCurrentView();
 }
 
 function deletePhase(name) {
@@ -498,7 +604,218 @@ function deletePhase(name) {
   collapsedPhases.delete(name);
   localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsedPhases]));
   setDirty(true);
-  renderGantt();
+  renderCurrentView();
+}
+
+/* ---------- Kanban board view ---------- */
+
+let currentView = "gantt"; // "gantt" | "board"
+
+// Whichever view is currently on screen — used everywhere data changes
+// (task edits, project/language switches, reconnects) so the visible
+// view refreshes instead of always assuming Gantt.
+function renderCurrentView() {
+  if (currentView === "board") {
+    renderKanbanBoard();
+  } else {
+    renderGantt();
+  }
+}
+
+function setView(view) {
+  currentView = view;
+  el("ganttContainer").classList.toggle("hidden", view !== "gantt");
+  el("ganttViewModes").classList.toggle("hidden", view !== "gantt");
+  el("kanbanContainer").classList.toggle("hidden", view !== "board");
+  el("viewGanttBtn").classList.toggle("active", view === "gantt");
+  el("viewBoardBtn").classList.toggle("active", view === "board");
+  if (view === "board") renderKanbanBoard();
+}
+
+function addStatusColumn() {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const name = (prompt(tr("prompt_add_status_name")) || "").trim();
+  if (!name) return;
+  if (!Array.isArray(proj.statuses)) proj.statuses = getStatusList();
+  if (proj.statuses.includes(name)) {
+    showToast(tr("err_status_duplicate"), true);
+    return;
+  }
+  proj.statuses.push(name);
+  setDirty(true);
+  renderKanbanBoard();
+}
+
+function renameStatus(oldName) {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  const newName = (prompt(tr("prompt_rename_status_name"), oldName) || "").trim();
+  if (!newName || newName === oldName) return;
+  if (!Array.isArray(proj.statuses)) proj.statuses = getStatusList();
+  if (proj.statuses.includes(newName)) {
+    showToast(tr("err_status_duplicate"), true);
+    return;
+  }
+  const idx = proj.statuses.indexOf(oldName);
+  if (idx !== -1) proj.statuses[idx] = newName;
+  tasks.forEach((t) => {
+    if (t.status === oldName) t.status = newName;
+  });
+  setDirty(true);
+  renderKanbanBoard();
+}
+
+function deleteStatus(name) {
+  const proj = getCurrentProject();
+  if (!proj) return;
+  if (!Array.isArray(proj.statuses)) proj.statuses = getStatusList();
+  if (proj.statuses.length <= 1) {
+    showToast(tr("toast_cannot_delete_last_status"), true);
+    return;
+  }
+  const affected = tasks.filter((t) => t.status === name);
+  const message = affected.length
+    ? tr("confirm_delete_status_with_tasks", { name, count: affected.length })
+    : tr("confirm_delete_status_empty", { name });
+  if (!confirm(message)) return;
+  const remaining = proj.statuses.filter((s) => s !== name);
+  const fallback = remaining[0];
+  affected.forEach((t) => (t.status = fallback));
+  proj.statuses = remaining;
+  setDirty(true);
+  renderKanbanBoard();
+}
+
+function moveTaskToStatus(taskId, newStatus) {
+  if (!getConfig()) {
+    showToast(tr("toast_board_readonly"), true);
+    renderKanbanBoard();
+    return;
+  }
+  const t = tasks.find((x) => x.id === taskId);
+  if (!t || t.status === newStatus) return;
+  if (newStatus === "Done") {
+    const incomplete = getIncompleteDependencyNames(t.dependencies, t.id);
+    if (incomplete.length) {
+      showToast(tr("err_deps_not_done", { names: incomplete.join(", ") }), true);
+      return;
+    }
+  }
+  t.status = newStatus;
+  setDirty(true);
+  renderKanbanBoard();
+}
+
+function renderKanbanCard(t, isEditable) {
+  const card = document.createElement("div");
+  card.className = "kanban-card" + (daysOverdue(t) ? " overdue" : "");
+  card.draggable = isEditable;
+  card.dataset.taskId = t.id;
+
+  const title = document.createElement("div");
+  title.className = "kanban-card-title";
+  title.textContent = t.name;
+  card.appendChild(title);
+
+  const phaseTag = document.createElement("div");
+  phaseTag.className = "kanban-phase-tag " + phaseColorClass(t.phase);
+  phaseTag.textContent = t.phase;
+  card.appendChild(phaseTag);
+
+  const footer = document.createElement("div");
+  footer.className = "kanban-card-footer";
+  const owner = (t.owner || "").trim();
+  if (owner) {
+    footer.appendChild(el2("span", "avatar", owner[0].toUpperCase(), { background: ownerColor(owner) }));
+    footer.appendChild(el2("span", "kanban-owner-name", owner));
+  }
+  const overdue = daysOverdue(t);
+  if (overdue) {
+    footer.appendChild(el2("span", "overdue-badge", `${overdue}d`));
+  }
+  card.appendChild(footer);
+
+  card.addEventListener("click", () => openEditModal(t.id));
+  card.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", t.id);
+    e.dataTransfer.effectAllowed = "move";
+  });
+
+  return card;
+}
+
+// Small helper for building an element with a class/text/inline-style in
+// one line, used by the (plain-DOM, non-templated) Kanban card builder.
+function el2(tag, className, text, styles) {
+  const node = document.createElement(tag);
+  node.className = className;
+  if (text) node.textContent = text;
+  if (styles) Object.assign(node.style, styles);
+  return node;
+}
+
+function renderKanbanBoard() {
+  const board = el("kanbanBoard");
+  board.innerHTML = "";
+  const statuses = getStatusList();
+  const isEditable = !!getConfig();
+
+  statuses.forEach((status) => {
+    const col = document.createElement("div");
+    col.className = "kanban-column";
+
+    const header = document.createElement("div");
+    header.className = "kanban-column-header";
+    header.appendChild(el2("span", "kanban-column-title", status));
+    const cardsInColumn = tasks.filter((t) => t.status === status);
+    header.appendChild(el2("span", "kanban-column-count", String(cardsInColumn.length)));
+
+    if (isEditable) {
+      const renameBtn = el2("button", "icon-btn", "✎");
+      renameBtn.type = "button";
+      renameBtn.title = tr("title_rename_status");
+      renameBtn.addEventListener("click", () => renameStatus(status));
+      header.appendChild(renameBtn);
+
+      const deleteBtn = el2("button", "icon-btn", "🗑");
+      deleteBtn.type = "button";
+      deleteBtn.title = tr("title_delete_status");
+      deleteBtn.addEventListener("click", () => deleteStatus(status));
+      header.appendChild(deleteBtn);
+    }
+
+    col.appendChild(header);
+
+    const cardList = document.createElement("div");
+    cardList.className = "kanban-card-list";
+    cardsInColumn.forEach((t) => cardList.appendChild(renderKanbanCard(t, isEditable)));
+    col.appendChild(cardList);
+
+    cardList.addEventListener("dragover", (e) => {
+      if (!isEditable) return;
+      e.preventDefault();
+      cardList.classList.add("drag-over");
+    });
+    cardList.addEventListener("dragleave", () => cardList.classList.remove("drag-over"));
+    cardList.addEventListener("drop", (e) => {
+      e.preventDefault();
+      cardList.classList.remove("drag-over");
+      const taskId = e.dataTransfer.getData("text/plain");
+      moveTaskToStatus(taskId, status);
+    });
+
+    board.appendChild(col);
+  });
+
+  if (isEditable) {
+    const addColBtn = document.createElement("button");
+    addColBtn.type = "button";
+    addColBtn.className = "kanban-add-column";
+    addColBtn.textContent = tr("btn_add_column");
+    addColBtn.addEventListener("click", addStatusColumn);
+    board.appendChild(addColBtn);
+  }
 }
 
 function renderProjectSelector() {
@@ -1084,6 +1401,32 @@ function populatePhaseSelect() {
   });
 }
 
+const DEFAULT_STATUSES = ["Not Started", "In Progress", "Blocked", "In Review", "Done"];
+
+// Statuses are the Kanban board's columns — an explicit, ordered,
+// per-project list (project.statuses), same pattern as phases, so they
+// can be renamed/added/deleted from the board.
+function getStatusList() {
+  const proj = getCurrentProject();
+  if (proj && Array.isArray(proj.statuses) && proj.statuses.length) return proj.statuses;
+  const seen = [];
+  tasks.forEach((t) => {
+    if (t.status && !seen.includes(t.status)) seen.push(t.status);
+  });
+  return seen.length ? seen : DEFAULT_STATUSES.slice();
+}
+
+function populateStatusSelect() {
+  const sel = el("f_status");
+  sel.innerHTML = "";
+  getStatusList().forEach((s) => {
+    const opt = document.createElement("option");
+    opt.value = s;
+    opt.textContent = s;
+    sel.appendChild(opt);
+  });
+}
+
 function openEditModal(taskId) {
   editingTaskId = taskId;
   const t = tasks.find((x) => x.id === taskId);
@@ -1093,6 +1436,7 @@ function openEditModal(taskId) {
     ? tr("modal_edit_title_dynamic", { id: t.id })
     : tr("modal_readonly_title_dynamic", { id: t.id });
   populatePhaseSelect();
+  populateStatusSelect();
   el("f_name").value = t.name.replace(/^◆\s*/, "");
   el("f_phase").value = t.phase;
   el("f_start").value = t.start;
@@ -1112,6 +1456,7 @@ function openNewTaskModal() {
   editingTaskId = null;
   el("modalTitle").textContent = tr("modal_add_title");
   populatePhaseSelect();
+  populateStatusSelect();
   el("f_name").value = "";
   const phases = getPhaseList();
   el("f_phase").value = phases.length ? phases[0] : "";
@@ -1119,7 +1464,8 @@ function openNewTaskModal() {
   el("f_start").value = today;
   el("f_end").value = today;
   el("f_type").value = "Task";
-  el("f_status").value = "Not Started";
+  const statuses = getStatusList();
+  el("f_status").value = statuses.length ? statuses[0] : "";
   el("f_owner").value = "";
   el("f_progress").value = 0;
   el("f_deps").value = "";
@@ -1188,7 +1534,7 @@ function saveTaskFromModal() {
 
   setDirty(true);
   closeEditModal();
-  renderGantt();
+  renderCurrentView();
 }
 
 function showModalError(msg) {
@@ -1212,7 +1558,7 @@ function deleteTask() {
   });
   setDirty(true);
   closeEditModal();
-  renderGantt();
+  renderCurrentView();
 }
 
 /* ---------- GitHub connect modal ---------- */
@@ -1264,7 +1610,7 @@ async function connectToken() {
     el("connectBtn").textContent = tr("btn_manage_connection");
     await loadProjects();
     renderProjectSelector();
-    renderGantt();
+    renderCurrentView();
     showToast(tr("toast_connected"));
   } catch (e) {
     errBox.textContent = tr("err_network");
@@ -1279,20 +1625,25 @@ function disconnectToken() {
   el("connectBtn").textContent = tr("btn_connect");
   loadProjects().then(() => {
     renderProjectSelector();
-    renderGantt();
+    renderCurrentView();
     showToast(tr("toast_disconnected"));
   });
 }
 
 /* ---------- Save to GitHub ---------- */
 
-async function saveChanges() {
+async function saveChanges(isAutosave) {
   const cfg = getConfig();
   if (!cfg) return;
 
   const cur = getCurrentProject();
   if (cur) cur.tasks = tasks;
   const content = b64EncodeUnicode(JSON.stringify({ projects }, null, 2));
+
+  const pill = el("statusPill");
+  pill.textContent = tr("status_saving");
+  pill.className = "status-pill status-saving";
+
   try {
     const res = await apiRequest(cfg, "PUT", {
       message: `Update Gantt data (${new Date().toISOString()})`,
@@ -1305,11 +1656,12 @@ async function saveChanges() {
       showToast(tr("toast_save_conflict"), true);
       await loadProjects();
       renderProjectSelector();
-      renderGantt();
+      renderCurrentView();
       return;
     }
     if (res.status === 401 || res.status === 403) {
       showToast(tr("toast_save_rejected"), true);
+      setDirty(true);
       return;
     }
     if (!res.ok) {
@@ -1318,19 +1670,26 @@ async function saveChanges() {
 
     const json = await res.json();
     fileSha = json.content.sha;
+    clearLocalDraft();
     setDirty(false);
-    showToast(tr("toast_saved"));
+    showToast(isAutosave ? tr("toast_autosaved") : tr("toast_saved"));
   } catch (e) {
     showToast(tr("toast_save_failed"), true);
+    setDirty(true);
   }
 }
 
 /* ---------- Wiring ---------- */
 
 function wireUp() {
-  document.querySelectorAll(".view-modes button").forEach((btn) => {
+  // Scoped to #ganttViewModes specifically (not the bare ".view-modes"
+  // class), since the Gantt/Board toggle buttons reuse that same class
+  // for styling — an unscoped selector here would also catch clicks on
+  // those, corrupting currentViewMode to undefined and stealing their
+  // "active" state.
+  document.querySelectorAll("#ganttViewModes button").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".view-modes button").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll("#ganttViewModes button").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       currentViewMode = btn.dataset.mode;
       // A full re-render (not gantt.change_view_mode in place) so the
@@ -1340,6 +1699,8 @@ function wireUp() {
     });
   });
 
+  el("viewGanttBtn").addEventListener("click", () => setView("gantt"));
+  el("viewBoardBtn").addEventListener("click", () => setView("board"));
   el("addTaskBtn").addEventListener("click", openNewTaskModal);
   el("addPhaseBtn").addEventListener("click", addPhase);
   el("newProjectBtn").addEventListener("click", addProject);
@@ -1367,6 +1728,16 @@ function wireUp() {
 }
 
 (async function init() {
+  // Idempotency guard: this whole script has been observed executing
+  // twice within the same document even though the server only ever
+  // logged one request for app.js — so it's the *script* being evaluated
+  // twice, not just this function being called twice. A plain top-level
+  // `let` flag doesn't survive that (each separate evaluation gets its
+  // own fresh module-level bindings); a flag on `window` does, since
+  // `window` is shared across every script evaluation in the document.
+  if (window.__ganttAppInitialized) return;
+  window.__ganttAppInitialized = true;
+
   wireUp();
   attachClickToEdit();
   attachDependencyLinking();
@@ -1376,6 +1747,14 @@ function wireUp() {
   el("connectBtn").textContent = cfg ? tr("btn_manage_connection") : tr("btn_connect");
   await loadProjects();
   renderProjectSelector();
-  renderGantt();
+  renderCurrentView();
   el("ganttScrollBody").scrollTop = 0; // start at the top regardless of any browser scroll restoration
+  maybeRestoreLocalDraft();
 })();
+
+// If the connection drops mid-edit, the local draft still protects the
+// work; once it's back, retry saving automatically instead of waiting
+// for the next debounce/max-wait tick or a manual click.
+window.addEventListener("online", () => {
+  if (dirty && getConfig()) scheduleAutosave();
+});
