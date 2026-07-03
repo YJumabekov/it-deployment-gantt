@@ -565,14 +565,14 @@
       "tasks": [
         {
           "id": "t1_1",
-          "name": "Зафиксировать список функций для релиза / Freeze feature list for release",
+          "name": "Разработка завершена (Электронное подписание документов) / Development completed (EDS)",
           "phase": "Фаза 1 — Разработка / Development",
           "start": "2026-07-06",
-          "end": "2026-07-08",
+          "end": "2026-07-16",
           "type": "Task",
-          "status": "Not Started",
-          "owner": "",
-          "progress": 0,
+          "status": "In Review",
+          "owner": "Данияр",
+          "progress": 90,
           "dependencies": "",
           "notes": "",
           "links": []
