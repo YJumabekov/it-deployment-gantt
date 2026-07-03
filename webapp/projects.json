@@ -367,17 +367,18 @@
         },
         {
           "id": "p5_end",
-          "name": "End-user training sessions",
-          "start": "2026-09-25",
-          "end": "2026-10-01",
+          "name": "Веха: План следующих курсов утвержден",
+          "start": "2026-07-23",
+          "end": "2026-07-24",
           "progress": 0,
-          "dependencies": "p5_ttt",
+          "dependencies": "",
           "custom_class": "phase-5",
           "phase": "Фаза 5 — Определение следующих курсов и приоритизация",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай, Ерганат, Тимур",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p6_mig",
