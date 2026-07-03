@@ -1341,9 +1341,9 @@
           "end": "2026-10-04",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур, Ерганат",
           "progress": 0,
-          "dependencies": "t9_3",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
