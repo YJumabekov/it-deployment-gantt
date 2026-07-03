@@ -915,15 +915,15 @@
         },
         {
           "id": "t4_6",
-          "name": "Разработать недостающие шаблоны ЭЦП / Develop missing EDS templates",
+          "name": "Разработать недостающие шаблоны протоколов (ЭЦП) / Develop missing protocol templates (EDS)",
           "phase": "Фаза 4 — Техническое развертывание / Technical Deployment",
           "start": "2026-07-20",
           "end": "2026-07-24",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t4_5",
+          "dependencies": "",
           "notes": "Длительность переменная (var.). / Variable duration (var.).",
           "links": []
         },
