@@ -977,9 +977,9 @@
           "end": "2026-08-23",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t4_1,t4_2,t4_3,t4_4,t4_5,t4_6,t4_7,t4_8,t4_9",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
@@ -991,9 +991,9 @@
           "end": "2026-08-24",
           "type": "Milestone",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
-          "dependencies": "t4_10",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
