@@ -747,15 +747,15 @@
         },
         {
           "id": "m2",
-          "name": "Разработка завершена (Прокторинг) / Development completed (Proctoring)",
+          "name": "QA тестирование  (Прокторинг) / QA testing (Proctoring)",
           "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
           "start": "2026-08-10",
           "end": "2026-08-10",
           "type": "Milestone",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t2_6",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
