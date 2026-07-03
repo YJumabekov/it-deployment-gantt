@@ -834,7 +834,7 @@
           "name": "Составить план и график развертывания по объектам / Build deployment plan and schedule by site",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
           "start": "2026-07-06",
-          "end": "2026-07-17",
+          "end": "2026-07-11",
           "type": "Task",
           "status": "Not Started",
           "owner": "Тимур, Ерганат, Данияр",
