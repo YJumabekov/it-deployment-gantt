@@ -761,16 +761,16 @@
         },
         {
           "id": "t3_1",
-          "name": "Составить реестр рисков (открытые вопросы по вендорам, юр. зависимости) / Build risk register (open vendor/legal dependencies)",
+          "name": "Составить реестр рисков (Соответствие НПА, зависимости и т.д.) / Build risk register (legal complianc. dependencies, etc.)",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
-          "start": "2026-07-03",
-          "end": "2026-07-04",
+          "start": "2026-07-05",
+          "end": "2026-07-10",
           "type": "Task",
-          "status": "Not Started",
-          "owner": "",
-          "progress": 0,
+          "status": "In Progress",
+          "owner": "Тимур, Ерганат, Данияр",
+          "progress": 10,
           "dependencies": "",
-          "notes": "Может идти параллельно с фазами 1-2. / Can run in parallel with Phases 1-2.",
+          "notes": "",
           "links": []
         },
         {
