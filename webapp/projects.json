@@ -307,17 +307,18 @@
         },
         {
           "id": "p4_gate",
-          "name": "◆ Gate 4 - Testing sign-off",
-          "start": "2026-10-15",
-          "end": "2026-10-15",
+          "name": "Веха: Концепция финализирована",
+          "start": "2026-07-30",
+          "end": "2026-07-31",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-4 milestone",
           "phase": "Фаза 4 — Извлечение уроков и финализация концепта",
           "type": "Milestone",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p5_mat",
