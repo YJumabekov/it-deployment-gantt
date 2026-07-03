@@ -142,17 +142,18 @@
         },
         {
           "id": "p2_sec",
-          "name": "Security & compliance review",
-          "start": "2026-07-28",
-          "end": "2026-07-31",
+          "name": "Согласовать концепцию и шаблон с руководством",
+          "start": "2026-07-12",
+          "end": "2026-07-17",
           "progress": 0,
-          "dependencies": "p2_arch",
+          "dependencies": "",
           "custom_class": "phase-2",
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p2_gate",
