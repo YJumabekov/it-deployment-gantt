@@ -1103,9 +1103,9 @@
           "end": "2026-08-16",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
-          "dependencies": "t3_3",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
@@ -1117,9 +1117,9 @@
           "end": "2026-08-30",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "m4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
