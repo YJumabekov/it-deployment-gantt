@@ -1033,10 +1033,10 @@
           "end": "2026-08-19",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Ерганат",
           "progress": 0,
-          "dependencies": "t5_2",
-          "notes": "Диапазон 5-10 дней в зависимости от поставщика. / Range 5-10 days depending on supplier.",
+          "dependencies": "",
+          "notes": "Диапазон 5 - 21 дней в зависимости от поставщика. / Range 5 - 21 days depending on supplier.",
           "links": []
         },
         {
