@@ -657,7 +657,7 @@
           "status": "Not Started",
           "owner": "Данияр",
           "progress": 0,
-          "dependencies": "",
+          "dependencies": "m2",
           "notes": "",
           "links": []
         },
