@@ -1089,9 +1089,9 @@
           "end": "2026-08-31",
           "type": "Milestone",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Арай",
           "progress": 0,
-          "dependencies": "t5_6",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
