@@ -68,6 +68,10 @@ const I18N = {
     field_progress: "Progress (%)",
     field_dependencies: "Dependencies (comma-separated task IDs)",
     field_notes: "Notes",
+    field_links: "Document links",
+    btn_add_link: "+ Add link",
+    link_label_placeholder: "Label (optional)",
+    links_none: "No links added.",
     type_task: "Task",
     type_milestone: "Milestone",
     status_not_started: "Not Started",
@@ -176,6 +180,10 @@ const I18N = {
     field_progress: "Прогресс (%)",
     field_dependencies: "Зависимости (ID задач через запятую)",
     field_notes: "Заметки",
+    field_links: "Ссылки на документы",
+    btn_add_link: "+ Добавить ссылку",
+    link_label_placeholder: "Название (необязательно)",
+    links_none: "Ссылки не добавлены.",
     type_task: "Задача",
     type_milestone: "Веха",
     status_not_started: "Не начато",
@@ -1427,6 +1435,59 @@ function populateStatusSelect() {
   });
 }
 
+// Document links: stored as [{label, url}, ...] per task. Editable mode
+// shows label+url input pairs with a remove button per row; read-only
+// mode shows them as plain clickable links instead.
+function normalizeUrl(url) {
+  const trimmed = (url || "").trim();
+  if (!trimmed) return "";
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) return trimmed;
+  return "https://" + trimmed;
+}
+
+function addLinkRow(label, url, isEditable) {
+  const list = el("linksList");
+  const row = document.createElement("div");
+  if (isEditable) {
+    row.className = "link-row";
+    row.innerHTML =
+      `<input type="text" class="link-label" placeholder="${escapeHtml(tr("link_label_placeholder"))}" value="${escapeHtml(label || "")}" />` +
+      `<input type="text" class="link-url" placeholder="https://..." value="${escapeHtml(url || "")}" />` +
+      `<button type="button" class="icon-btn remove-link-btn">✕</button>`;
+    row.querySelector(".remove-link-btn").addEventListener("click", () => row.remove());
+  } else {
+    if (!url) return;
+    row.className = "link-row-readonly";
+    const a = document.createElement("a");
+    a.href = normalizeUrl(url);
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = label && label.trim() ? label : url;
+    row.appendChild(a);
+  }
+  list.appendChild(row);
+}
+
+function renderLinksEditor(links, isEditable) {
+  const list = el("linksList");
+  list.innerHTML = "";
+  (links || []).forEach((link) => addLinkRow(link.label, link.url, isEditable));
+  el("addLinkBtn").classList.toggle("hidden", !isEditable);
+  if (!isEditable && (!links || !links.length)) {
+    list.innerHTML = `<div class="links-empty">${escapeHtml(tr("links_none"))}</div>`;
+  }
+}
+
+function collectLinksFromModal() {
+  return Array.from(el("linksList").querySelectorAll(".link-row"))
+    .map((row) => ({
+      label: row.querySelector(".link-label").value.trim(),
+      url: row.querySelector(".link-url").value.trim(),
+    }))
+    .filter((l) => l.url)
+    .map((l) => ({ label: l.label, url: normalizeUrl(l.url) }));
+}
+
 function openEditModal(taskId) {
   editingTaskId = taskId;
   const t = tasks.find((x) => x.id === taskId);
@@ -1447,6 +1508,7 @@ function openEditModal(taskId) {
   el("f_progress").value = t.progress || 0;
   el("f_deps").value = t.dependencies || "";
   el("f_notes").value = t.notes || "";
+  renderLinksEditor(t.links, isEditable);
   setModalEditable(isEditable);
   el("modalError").classList.add("hidden");
   el("modalOverlay").classList.remove("hidden");
@@ -1470,6 +1532,7 @@ function openNewTaskModal() {
   el("f_progress").value = 0;
   el("f_deps").value = "";
   el("f_notes").value = "";
+  renderLinksEditor([], true);
   setModalEditable(true);
   el("deleteBtn").classList.add("hidden");
   el("modalError").classList.add("hidden");
@@ -1523,6 +1586,7 @@ function saveTaskFromModal() {
     progress: Number(el("f_progress").value) || 0,
     dependencies,
     notes: el("f_notes").value.trim(),
+    links: collectLinksFromModal(),
   };
 
   if (editingTaskId) {
@@ -1714,6 +1778,7 @@ function wireUp() {
   el("cancelBtn").addEventListener("click", closeEditModal);
   el("saveTaskBtn").addEventListener("click", saveTaskFromModal);
   el("deleteBtn").addEventListener("click", deleteTask);
+  el("addLinkBtn").addEventListener("click", () => addLinkRow("", "", true));
 
   el("tokenCancelBtn").addEventListener("click", closeTokenModal);
   el("tokenSaveBtn").addEventListener("click", connectToken);
@@ -1723,6 +1788,19 @@ function wireUp() {
     if (dirty) {
       e.preventDefault();
       e.returnValue = "";
+    }
+  });
+
+  // beforeunload can only show the browser's own generic "leave site?"
+  // warning (no custom "Save" button allowed, and in-flight requests can
+  // get killed once unload actually starts) — so the more reliable save
+  // point is here: the moment the tab is hidden (switching tabs,
+  // minimizing, or closing), fire the save immediately instead of
+  // waiting out the autosave debounce.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && dirty && getConfig()) {
+      cancelAutosaveTimers();
+      saveChanges(true);
     }
   });
 }
