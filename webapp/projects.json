@@ -2,7 +2,7 @@
   "projects": [
     {
       "id": "it-deployment",
-      "name": "IT Product Deployment",
+      "name": "SENTAL Courses development",
       "phases": [
         "Phase 1 - Initiation & Planning",
         "Phase 2 - Design",
@@ -1369,9 +1369,9 @@
           "end": "2026-10-06",
           "type": "Milestone",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t9_5",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
