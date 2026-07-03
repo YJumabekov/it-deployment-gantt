@@ -22,17 +22,18 @@
       "tasks": [
         {
           "id": "p1_charter",
-          "name": "Project charter & business case",
-          "start": "2026-07-01",
-          "end": "2026-07-03",
+          "name": "Изучение текущих курсов на платформе (структура, содержание, форматы)",
+          "start": "2026-07-06",
+          "end": "2026-07-10",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-1",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
-          "owner": "TBD",
-          "status": "Not Started",
-          "notes": ""
+          "owner": "Алтынай",
+          "status": "In Progress",
+          "notes": "",
+          "links": []
         },
         {
           "id": "p1_stake",
