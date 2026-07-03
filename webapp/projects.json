@@ -530,9 +530,9 @@
           "start": "2026-07-01",
           "end": "2026-07-17",
           "type": "Task",
-          "status": "Not Started",
+          "status": "In Progress",
           "owner": "Данияр",
-          "progress": 0,
+          "progress": 60,
           "dependencies": "t2_3",
           "notes": "",
           "links": []
