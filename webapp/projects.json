@@ -337,17 +337,18 @@
         },
         {
           "id": "p5_ttt",
-          "name": "Train-the-trainer sessions",
-          "start": "2026-09-22",
-          "end": "2026-09-24",
+          "name": "Оценить и приоритизировать список (критерии: важность, срочность, сложность, ресурсы)",
+          "start": "2026-07-20",
+          "end": "2026-07-24",
           "progress": 0,
-          "dependencies": "p5_mat",
+          "dependencies": "",
           "custom_class": "phase-5",
           "phase": "Фаза 5 — Определение следующих курсов и приоритизация",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай, Ерганат, Тимур",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p5_comm",
