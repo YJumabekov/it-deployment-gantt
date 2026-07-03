@@ -585,7 +585,7 @@
           "end": "2026-07-17",
           "type": "Task",
           "status": "In Progress",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 60,
           "dependencies": "t1_1",
           "notes": "",
@@ -1471,6 +1471,20 @@
           "progress": 0,
           "dependencies": "",
           "notes": "Периодичность: постоянно. / Frequency: ongoing.",
+          "links": []
+        },
+        {
+          "id": "development_completed_analytic_mr4sfa0i",
+          "name": "Разработка завершена (Аналитика) / Development completed (Analytics)",
+          "phase": "Фаза 1 — Разработка / Development",
+          "start": "2026-07-03",
+          "end": "2026-07-17",
+          "type": "Task",
+          "status": "In Progress",
+          "owner": "Данияр",
+          "progress": 60,
+          "dependencies": "",
+          "notes": "",
           "links": []
         }
       ]
