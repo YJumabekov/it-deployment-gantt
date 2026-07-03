@@ -803,7 +803,7 @@
         },
         {
           "id": "t3_4",
-          "name": "Зарегестрировать работников Алстом в системе / Register Alstom employees in Moodle",
+          "name": "Определить и согласовать объект и план внедрения с Алстом / Define and align deployment area and plan with Alstom",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
           "start": "2026-07-07",
           "end": "2026-07-11",
@@ -811,7 +811,7 @@
           "status": "Not Started",
           "owner": "",
           "progress": 0,
-          "dependencies": "t3_1",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
