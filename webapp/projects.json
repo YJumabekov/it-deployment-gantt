@@ -232,17 +232,18 @@
         },
         {
           "id": "p3_doc",
-          "name": "Draft technical & user documentation",
-          "start": "2026-09-01",
-          "end": "2026-09-08",
+          "name": "Доработка по итогам ревью",
+          "start": "2026-07-27",
+          "end": "2026-07-31",
           "progress": 0,
-          "dependencies": "p3_core",
+          "dependencies": "",
           "custom_class": "phase-3",
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p3_gate",
