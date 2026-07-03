@@ -887,16 +887,16 @@
         },
         {
           "id": "t4_3",
-          "name": "Обновить/проверить контактные данные пользователей / Update/validate user contact data",
+          "name": "Зарегестрировать работников Алстом в системе / Register Alstom employees in Moodle",
           "phase": "Фаза 4 — Техническое развертывание / Technical Deployment",
-          "start": "2026-08-14",
-          "end": "2026-08-17",
+          "start": "2026-07-01",
+          "end": "2026-07-24",
           "type": "Task",
-          "status": "Not Started",
-          "owner": "",
+          "status": "Blocked",
+          "owner": "Арай",
           "progress": 0,
-          "dependencies": "m3",
-          "notes": "",
+          "dependencies": "",
+          "notes": "Обновить/проверить контактные данные пользователей / Update/validate user contact data",
           "links": []
         },
         {
