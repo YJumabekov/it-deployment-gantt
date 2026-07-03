@@ -820,13 +820,13 @@
           "name": "Согласовать список подписантов ЭЦП и корп. почты / Confirm EDS signatories list and corporate emails",
           "phase": "Фаза 3 — Планирование внедрения / Deployment Planning",
           "start": "2026-07-06",
-          "end": "2026-07-10",
+          "end": "2026-07-17",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур",
           "progress": 0,
           "dependencies": "",
-          "notes": "Внешняя зависимость - стартует параллельно с началом проекта. / External dependency - starts parallel to project kickoff.",
+          "notes": "Получить ЭЦП для подписантов",
           "links": []
         },
         {
