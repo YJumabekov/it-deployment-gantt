@@ -1047,9 +1047,9 @@
           "end": "2026-08-22",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Арай",
           "progress": 0,
-          "dependencies": "t4_3",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
