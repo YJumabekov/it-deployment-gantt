@@ -1278,34 +1278,6 @@
           "links": []
         },
         {
-          "id": "t8_3",
-          "name": "Определить эскалацию и SLA для критичных инцидентов / Define escalation path and SLA for critical issues",
-          "phase": "Фаза 8 — Усиленная поддержка / Hypercare",
-          "start": "2026-09-13",
-          "end": "2026-09-13",
-          "type": "Task",
-          "status": "Not Started",
-          "owner": "",
-          "progress": 0,
-          "dependencies": "m7",
-          "notes": "",
-          "links": []
-        },
-        {
-          "id": "t8_4",
-          "name": "Передать открытые инциденты в штатную поддержку / Transition open issues to BAU support",
-          "phase": "Фаза 8 — Усиленная поддержка / Hypercare",
-          "start": "2026-09-27",
-          "end": "2026-09-28",
-          "type": "Task",
-          "status": "Not Started",
-          "owner": "",
-          "progress": 0,
-          "dependencies": "t8_1",
-          "notes": "",
-          "links": []
-        },
-        {
           "id": "m8",
           "name": "Усиленная поддержка завершена / Hypercare exit",
           "phase": "Фаза 8 — Усиленная поддержка / Hypercare",
@@ -1313,9 +1285,9 @@
           "end": "2026-09-29",
           "type": "Milestone",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Тимур, Ерганат, Данияр",
           "progress": 0,
-          "dependencies": "t8_4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
