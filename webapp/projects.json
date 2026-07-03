@@ -412,17 +412,18 @@
         },
         {
           "id": "p6_rehearse",
-          "name": "Go-live rehearsal / dry run",
-          "start": "2026-10-23",
-          "end": "2026-10-26",
+          "name": "Ревью и финализация каждого курса",
+          "start": "2026-08-13",
+          "end": "2026-08-14",
           "progress": 0,
-          "dependencies": "p6_mig,p6_cutplan",
+          "dependencies": "",
           "custom_class": "phase-6",
           "phase": "Фаза 6 — Создание следующих курсов",
           "type": "Task",
-          "owner": "TBD",
+          "owner": "Алтынай, Ерганат, Тимур",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p6_golive",
