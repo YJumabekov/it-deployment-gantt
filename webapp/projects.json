@@ -747,7 +747,7 @@
         },
         {
           "id": "m2",
-          "name": "UAT завершен / Go-No-Go / UAT complete / Go-No-Go",
+          "name": "Разработка завершена (Прокторинг) / Development completed (Proctoring)",
           "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
           "start": "2026-08-06",
           "end": "2026-08-06",
