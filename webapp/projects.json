@@ -656,7 +656,7 @@
           "type": "Task",
           "status": "Not Started",
           "owner": "Данияр",
-          "progress": 80,
+          "progress": 0,
           "dependencies": "m2",
           "notes": "Согласовать вендора и параметры прокторинга / Finalize proctoring vendor and settings decision",
           "links": []
