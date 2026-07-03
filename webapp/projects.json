@@ -677,7 +677,7 @@
         },
         {
           "id": "t2_2",
-          "name": "Исправить критические/высокие дефекты по итогам QA / Fix critical/high defects from QA",
+          "name": "Разработка завершена (Прикрепление документов и сроки по курсам) / Development completed (Document attachment and course dates)",
           "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
           "start": "2026-07-17",
           "end": "2026-07-23",
@@ -691,7 +691,7 @@
         },
         {
           "id": "t2_3",
-          "name": "Подготовить UAT-среду с тестовыми данными / Prepare UAT environment with test data",
+          "name": "Разработка завершена (Аналитика) / Development completed (Analytics)",
           "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
           "start": "2026-07-10",
           "end": "2026-07-13",
