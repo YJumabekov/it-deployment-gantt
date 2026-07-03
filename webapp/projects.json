@@ -1486,6 +1486,20 @@
           "dependencies": "",
           "notes": "",
           "links": []
+        },
+        {
+          "id": "role_matrix_development_comple_mr4t0u3m",
+          "name": "Разработка завершена (Role Matrix) / Development completed (Ролевая Матрица)",
+          "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
+          "start": "2026-07-03",
+          "end": "2026-07-03",
+          "type": "Task",
+          "status": "Not Started",
+          "owner": "",
+          "progress": 0,
+          "dependencies": "",
+          "notes": "",
+          "links": []
         }
       ]
     }
