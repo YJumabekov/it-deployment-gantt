@@ -1055,7 +1055,7 @@
         },
         {
           "id": "t5_5",
-          "name": "Напечатать ID-карты - партия 1 (приоритет: руководство) / Print ID cards - batch 1 (priority: management)",
+          "name": "Напечатать ID-карты - партия 1 / Print ID cards - batch 1",
           "phase": "Фаза 5 — Закуп технических средств / Procurement of Technical Equipment",
           "start": "2026-08-22",
           "end": "2026-08-23",
@@ -1063,7 +1063,7 @@
           "status": "Not Started",
           "owner": "",
           "progress": 0,
-          "dependencies": "t5_3,t5_4",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
