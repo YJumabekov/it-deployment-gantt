@@ -247,17 +247,18 @@
         },
         {
           "id": "p3_gate",
-          "name": "◆ Gate 3 - Build complete",
-          "start": "2026-09-11",
-          "end": "2026-09-11",
+          "name": "Веха: Первый курс готов",
+          "start": "2026-07-30",
+          "end": "2026-07-31",
           "progress": 0,
-          "dependencies": "p3_cust,p3_int,p3_doc",
+          "dependencies": "",
           "custom_class": "phase-3 milestone",
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Milestone",
-          "owner": "TBD",
+          "owner": "Алтынай",
           "status": "Not Started",
-          "notes": ""
+          "notes": "",
+          "links": []
         },
         {
           "id": "p4_unit",
