@@ -587,7 +587,7 @@
           "status": "In Progress",
           "owner": "Данияр",
           "progress": 60,
-          "dependencies": "",
+          "dependencies": "t1_3",
           "notes": "",
           "links": []
         },
