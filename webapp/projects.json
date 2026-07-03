@@ -691,7 +691,7 @@
         },
         {
           "id": "t2_3",
-          "name": "Разработка завершена (Аналитика) / Development completed (Analytics)",
+          "name": "QA тестирование  (Аналитика) / QA testing (Analytics)",
           "phase": "Фаза 2 — Приемка и тестирование / QA & UAT",
           "start": "2026-07-10",
           "end": "2026-07-13",
