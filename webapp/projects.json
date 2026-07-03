@@ -963,9 +963,9 @@
           "end": "2026-08-19",
           "type": "Task",
           "status": "Not Started",
-          "owner": "",
+          "owner": "Данияр",
           "progress": 0,
-          "dependencies": "t4_4,t4_7",
+          "dependencies": "",
           "notes": "",
           "links": []
         },
