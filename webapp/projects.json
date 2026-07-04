@@ -46,7 +46,7 @@
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -61,7 +61,7 @@
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -76,7 +76,7 @@
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -91,7 +91,7 @@
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Milestone",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
