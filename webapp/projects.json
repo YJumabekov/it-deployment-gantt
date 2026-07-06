@@ -53,15 +53,15 @@
         {
           "id": "p1_req",
           "name": "Изучение текущих технических возможностей платформы (Moodle, инструменты авторинга, шаблоны)",
-          "start": "2026-07-06",
-          "end": "2026-07-10",
+          "start": "2026-07-04",
+          "end": "2026-07-07",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-1",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "In Review",
           "notes": "",
           "links": []
         },
