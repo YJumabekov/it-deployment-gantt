@@ -143,8 +143,8 @@
         {
           "id": "p2_sec",
           "name": "Согласовать концепцию и шаблон с руководством",
-          "start": "2026-07-12",
-          "end": "2026-07-17",
+          "start": "2026-07-10",
+          "end": "2026-07-10",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-2",
@@ -158,8 +158,8 @@
         {
           "id": "p2_gate",
           "name": "Веха: Концепция утверждена",
-          "start": "2026-07-16",
-          "end": "2026-07-17",
+          "start": "2026-07-10",
+          "end": "2026-07-13",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-2 milestone",
