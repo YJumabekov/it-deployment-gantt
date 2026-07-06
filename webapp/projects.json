@@ -106,7 +106,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -121,7 +121,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -136,7 +136,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -151,7 +151,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -166,7 +166,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Milestone",
           "owner": "Алтынай, Ерганат, Тимур",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
