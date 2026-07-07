@@ -93,7 +93,12 @@
           "owner": "Алтынай",
           "status": "In Review",
           "notes": "",
-          "links": []
+          "links": [
+            {
+              "label": "",
+              "url": "https://docs.google.com/presentation/d/15lYzpMWZRAFAtudfhRcl8bLmCRxx2Z6t/edit?usp=sharing&ouid=107655698173754036220&rtpof=true&sd=true"
+            }
+          ]
         },
         {
           "id": "p2_arch",
