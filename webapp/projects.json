@@ -621,7 +621,7 @@
           "type": "Task",
           "status": "Not Started",
           "owner": "Данияр",
-          "progress": 70,
+          "progress": 80,
           "dependencies": "",
           "notes": "",
           "links": []
