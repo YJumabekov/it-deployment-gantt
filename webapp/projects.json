@@ -537,7 +537,7 @@
           "type": "Task",
           "status": "In Progress",
           "owner": "Данияр",
-          "progress": 60,
+          "progress": 90,
           "dependencies": "t2_3",
           "notes": "",
           "links": []
