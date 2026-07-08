@@ -563,9 +563,9 @@
           "start": "2026-07-01",
           "end": "2026-07-10",
           "type": "Task",
-          "status": "In Progress",
+          "status": "In Review",
           "owner": "Данияр",
-          "progress": 90,
+          "progress": 100,
           "dependencies": "t2_5",
           "notes": "",
           "links": []
