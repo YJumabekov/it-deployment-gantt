@@ -663,7 +663,7 @@
           "type": "Task",
           "status": "In Progress",
           "owner": "Данияр",
-          "progress": 90,
+          "progress": 100,
           "dependencies": "",
           "notes": "",
           "links": []
@@ -677,7 +677,7 @@
           "type": "Task",
           "status": "In Progress",
           "owner": "Данияр",
-          "progress": 90,
+          "progress": 100,
           "dependencies": "",
           "notes": "",
           "links": []
