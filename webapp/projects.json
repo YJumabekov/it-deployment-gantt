@@ -84,14 +84,14 @@
           "id": "p1_gate",
           "name": "Веха: Исследование завершено",
           "start": "2026-07-07",
-          "end": "2026-07-07",
+          "end": "2026-07-11",
           "progress": 0,
           "dependencies": "",
           "custom_class": "phase-1 milestone",
           "phase": "Фаза 1 — Изучение и исследование",
           "type": "Milestone",
           "owner": "Алтынай",
-          "status": "In Review",
+          "status": "Done",
           "notes": "https://docs.google.com/presentation/d/15lYzpMWZRAFAtudfhRcl8bLmCRxx2Z6t/edit?usp=sharing&ouid=107655698173754036220&rtpof=true&sd=true\n\nссылка на отчет",
           "links": [
             {
