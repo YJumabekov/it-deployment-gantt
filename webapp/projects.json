@@ -521,9 +521,9 @@
           "start": "2026-07-01",
           "end": "2026-07-17",
           "type": "Task",
-          "status": "In Progress",
+          "status": "Done",
           "owner": "Данияр",
-          "progress": 90,
+          "progress": 100,
           "dependencies": "t2_2",
           "notes": "Остался исправление ошибок",
           "links": []
