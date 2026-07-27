@@ -619,7 +619,7 @@
           "start": "2026-07-08",
           "end": "2026-07-17",
           "type": "Task",
-          "status": "Not Started",
+          "status": "Done",
           "owner": "Данияр",
           "progress": 80,
           "dependencies": "",
