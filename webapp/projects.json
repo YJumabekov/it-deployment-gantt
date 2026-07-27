@@ -111,7 +111,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -126,7 +126,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -141,7 +141,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -156,7 +156,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "In Review",
           "notes": "",
           "links": []
         },
@@ -171,7 +171,7 @@
           "phase": "Фаза 2 — Концепция и инструменты",
           "type": "Milestone",
           "owner": "Алтынай, Ерганат, Тимур",
-          "status": "In Progress",
+          "status": "In Review",
           "notes": "",
           "links": []
         },
@@ -186,7 +186,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "In Progress",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -201,7 +201,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -216,7 +216,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "Done",
           "notes": "",
           "links": []
         },
@@ -231,7 +231,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
           "owner": "Алтынай, Ерганат, Тимур",
-          "status": "Not Started",
+          "status": "In Review",
           "notes": "",
           "links": []
         },
@@ -246,7 +246,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Task",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
@@ -261,7 +261,7 @@
           "phase": "Фаза 3 — Создание первого контента",
           "type": "Milestone",
           "owner": "Алтынай",
-          "status": "Not Started",
+          "status": "In Progress",
           "notes": "",
           "links": []
         },
