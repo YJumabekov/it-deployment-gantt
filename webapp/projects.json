@@ -551,7 +551,7 @@
           "type": "Task",
           "status": "In Progress",
           "owner": "Махнур",
-          "progress": 5,
+          "progress": 50,
           "dependencies": "",
           "notes": "Выбрали сервис, цена и  функционал уточняется",
           "links": []
