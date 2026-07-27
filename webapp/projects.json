@@ -591,9 +591,9 @@
           "start": "2026-07-06",
           "end": "2026-07-31",
           "type": "Task",
-          "status": "Not Started",
+          "status": "In Progress",
           "owner": "Данияр",
-          "progress": 20,
+          "progress": 70,
           "dependencies": "m2",
           "notes": "Согласовать вендора и параметры прокторинга / Finalize proctoring vendor and settings decision. Техспек отправлен",
           "links": []
